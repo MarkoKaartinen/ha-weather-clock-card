@@ -7,6 +7,8 @@
     "calendars": "Calendars",
     "hourly_forecast_count": "Hourly forecast count",
     "daily_forecast_count": "Daily forecast count",
+    "show_hourly_forecast": "Show hourly forecast",
+    "show_daily_forecast": "Show daily forecast",
     "show_calendar": "Show calendar",
     "calendar_title": "Calendar title",
     "calendar_icon": "Calendar icon"

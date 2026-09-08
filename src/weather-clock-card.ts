@@ -38,6 +38,8 @@ type CardConfig = {
   calendars?: string[];
   hourly_forecast_count?: number;
   daily_forecast_count?: number;
+  show_hourly_forecast?: boolean;
+  show_daily_forecast?: boolean;
   show_calendar?: boolean;
   calendar_title?: string;
   calendar_icon?: string;
@@ -67,6 +69,7 @@ export class WeatherClockCard extends LitElement {
   private refreshTimer?: number;
   private needsInitialData = true;
   private refreshQueued = false;
+  private dataVersion = 0;
 
   static getConfigElement() { return document.createElement("weather-clock-card-editor"); }
   static getStubConfig() { return { current_weather: "weather.home" }; }
@@ -77,6 +80,7 @@ export class WeatherClockCard extends LitElement {
   public setConfig(config: CardConfig): void {
     if (!config.current_weather) throw new Error("current_weather is required");
     this.config = config;
+    this.dataVersion += 1;
     this.needsInitialData = true;
     this.queueInitialDataLoad();
   }
@@ -102,8 +106,10 @@ export class WeatherClockCard extends LitElement {
     this.refreshQueued = true;
     queueMicrotask(async () => {
       this.refreshQueued = false;
+      const version = this.dataVersion;
       await this.refreshData();
-      this.needsInitialData = false;
+      if (version === this.dataVersion) this.needsInitialData = false;
+      else this.queueInitialDataLoad();
     });
   }
 
@@ -250,9 +256,9 @@ export class WeatherClockCard extends LitElement {
         </div>
         <img class="current-icon" src=${this.icon(condition)} alt=${condition ?? ""} />
       </section>
-      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
-      ${hourly.length ? html`<section class="forecast hourly" part="hourly-forecast">${hourly.map((item) => this.renderForecast(item))}</section>` : nothing}
-      ${daily.length ? html`<section class="forecast daily" part="daily-forecast">${daily.map((item) => this.renderForecast(item, true))}</section>` : nothing}
+      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start?.includes("T") ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
+      ${this.config.show_hourly_forecast !== false && hourly.length ? html`<section class="forecast hourly" part="hourly-forecast">${hourly.map((item) => this.renderForecast(item))}</section>` : nothing}
+      ${this.config.show_daily_forecast !== false && daily.length ? html`<section class="forecast daily" part="daily-forecast">${daily.map((item) => this.renderForecast(item, true))}</section>` : nothing}
     </ha-card>`;
   }
   private eventTime(event: CalendarEvent): string {
@@ -261,12 +267,12 @@ export class WeatherClockCard extends LitElement {
   }
 
   static styles = css`
-    :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 150px; --weather-clock-clock-size: 60px; }
+    :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 170px; --weather-clock-clock-size: 60px; }
     ha-card { height:auto; overflow:hidden; color:var(--primary-text-color); background:var(--ha-card-background, var(--card-background-color)); border-radius:var(--ha-card-border-radius, 24px); }
-    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:6px 0 16px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:6px 0 10px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.45; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
-    .calendar { display:flex; gap:18px; align-items:center; padding:10px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:3px; } .muted { color:var(--secondary-text-color); }
-    .forecast { display:flex; justify-content:space-between; gap:12px; padding:16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { flex:1 1 0; min-width:0; text-align:center; font-weight:700; } .forecast-time { min-height:2.3em; font-size:16px; text-transform:capitalize; } .forecast-icon { display:block; width:60px; height:60px; object-fit:contain; margin:6px auto; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin-top:6px; font-size:14px; }
-    @media (max-width: 500px) { .current { padding:22px; } .calendar { padding:14px 22px; } .clock { font-size:3.7rem; } .forecast { padding:18px 8px; gap:2px; } .forecast-icon { width:46px; height:46px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
+    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
+    .calendar { display:flex; gap:12px; align-items:center; padding:6px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.3; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
+    .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:10px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { flex:1 1 0; min-width:0; align-self:start; text-align:center; font-weight:700; } .forecast-time { min-height:0; margin-bottom:4px; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:76px; height:76px; object-fit:contain; margin:0 auto 4px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin-top:3px; font-size:14px; }
+    @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:8px 22px; } .clock { font-size:3.7rem; } .forecast { padding:12px 8px; gap:2px; } .forecast-icon { width:54px; height:54px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
   `;
 }
 
@@ -316,6 +322,8 @@ class WeatherClockCardEditor extends LitElement {
     { name: "calendars", selector: { entity: { domain: "calendar", multiple: true } } },
     { name: "hourly_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
     { name: "daily_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
+    { name: "show_hourly_forecast", selector: { boolean: {} } },
+    { name: "show_daily_forecast", selector: { boolean: {} } },
     { name: "show_calendar", selector: { boolean: {} } },
     { name: "calendar_title", selector: { text: {} } },
     { name: "calendar_icon", selector: { icon: {} } },

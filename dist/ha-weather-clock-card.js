@@ -1,6 +1,6 @@
 var L2 = Object.defineProperty;
 var x2 = (a, e, t) => e in a ? L2(a, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[e] = t;
-var g = (a, e, t) => x2(a, typeof e != "symbol" ? e + "" : e, t);
+var C = (a, e, t) => x2(a, typeof e != "symbol" ? e + "" : e, t);
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -48,7 +48,7 @@ const E2 = (a) => new f2(typeof a == "string" ? a : a + "", void 0, X), m2 = (a,
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const { is: T2, defineProperty: N2, getOwnPropertyDescriptor: P2, getOwnPropertyNames: H2, getOwnPropertySymbols: O2, getPrototypeOf: D2 } = Object, v = globalThis, a2 = v.trustedTypes, U2 = a2 ? a2.emptyScript : "", W = v.reactiveElementPolyfillSupport, M = (a, e) => a, R = { toAttribute(a, e) {
+const { is: T2, defineProperty: N2, getOwnPropertyDescriptor: P2, getOwnPropertyNames: H2, getOwnPropertySymbols: O2, getPrototypeOf: D2 } = Object, _ = globalThis, a2 = _.trustedTypes, U2 = a2 ? a2.emptyScript : "", W = _.reactiveElementPolyfillSupport, M = (a, e) => a, R = { toAttribute(a, e) {
   switch (e) {
     case Boolean:
       a = a ? U2 : null;
@@ -77,7 +77,7 @@ const { is: T2, defineProperty: N2, getOwnPropertyDescriptor: P2, getOwnProperty
   }
   return t;
 } }, Y = (a, e) => !T2(a, e), n2 = { attribute: !0, type: String, converter: R, reflect: !1, useDefault: !1, hasChanged: Y };
-Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), v.litPropertyMetadata ?? (v.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
+Symbol.metadata ?? (Symbol.metadata = Symbol("metadata")), _.litPropertyMetadata ?? (_.litPropertyMetadata = /* @__PURE__ */ new WeakMap());
 let S = class extends HTMLElement {
   static addInitializer(e) {
     this._$Ei(), (this.l ?? (this.l = [])).push(e);
@@ -281,15 +281,15 @@ let S = class extends HTMLElement {
   firstUpdated(e) {
   }
 };
-S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[M("elementProperties")] = /* @__PURE__ */ new Map(), S[M("finalized")] = /* @__PURE__ */ new Map(), W == null || W({ ReactiveElement: S }), (v.reactiveElementVersions ?? (v.reactiveElementVersions = [])).push("2.1.2");
+S.elementStyles = [], S.shadowRootOptions = { mode: "open" }, S[M("elementProperties")] = /* @__PURE__ */ new Map(), S[M("finalized")] = /* @__PURE__ */ new Map(), W == null || W({ ReactiveElement: S }), (_.reactiveElementVersions ?? (_.reactiveElementVersions = [])).push("2.1.2");
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const T = globalThis, r2 = (a) => a, V = T.trustedTypes, o2 = V ? V.createPolicy("lit-html", { createHTML: (a) => a }) : void 0, y2 = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, v2 = "?" + y, I2 = `<${v2}>`, k = document, N = () => k.createComment(""), P = (a) => a === null || typeof a != "object" && typeof a != "function", e2 = Array.isArray, F2 = (a) => e2(a) || typeof (a == null ? void 0 : a[Symbol.iterator]) == "function", K = `[ 	
+const T = globalThis, r2 = (a) => a, V = T.trustedTypes, o2 = V ? V.createPolicy("lit-html", { createHTML: (a) => a }) : void 0, y2 = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, _2 = "?" + y, I2 = `<${_2}>`, k = document, N = () => k.createComment(""), P = (a) => a === null || typeof a != "object" && typeof a != "function", e2 = Array.isArray, F2 = (a) => e2(a) || typeof (a == null ? void 0 : a[Symbol.iterator]) == "function", K = `[ 	
 \f\r]`, E = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, c2 = /-->/g, l2 = />/g, w = RegExp(`>|${K}(?:([^\\s"'>=/]+)(${K}*=${K}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), d2 = /'/g, h2 = /"/g, _2 = /^(?:script|style|textarea|title)$/i, Z2 = (a) => (e, ...t) => ({ _$litType$: a, strings: e, values: t }), C = Z2(1), L = Symbol.for("lit-noChange"), u = Symbol.for("lit-nothing"), u2 = /* @__PURE__ */ new WeakMap(), b = k.createTreeWalker(k, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), d2 = /'/g, h2 = /"/g, v2 = /^(?:script|style|textarea|title)$/i, Z2 = (a) => (e, ...t) => ({ _$litType$: a, strings: e, values: t }), g = Z2(1), L = Symbol.for("lit-noChange"), u = Symbol.for("lit-nothing"), u2 = /* @__PURE__ */ new WeakMap(), b = k.createTreeWalker(k, 129);
 function w2(a, e) {
   if (!e2(a) || !a.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return o2 !== void 0 ? o2.createHTML(e) : e;
@@ -299,10 +299,10 @@ const R2 = (a, e) => {
   let s, r = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", n = E;
   for (let o = 0; o < t; o++) {
     const c = a[o];
-    let h, l, d = -1, p = 0;
-    for (; p < c.length && (n.lastIndex = p, l = n.exec(c), l !== null); ) p = n.lastIndex, n === E ? l[1] === "!--" ? n = c2 : l[1] !== void 0 ? n = l2 : l[2] !== void 0 ? (_2.test(l[2]) && (s = RegExp("</" + l[2], "g")), n = w) : l[3] !== void 0 && (n = w) : n === w ? l[0] === ">" ? (n = s ?? E, d = -1) : l[1] === void 0 ? d = -2 : (d = n.lastIndex - l[2].length, h = l[1], n = l[3] === void 0 ? w : l[3] === '"' ? h2 : d2) : n === h2 || n === d2 ? n = w : n === c2 || n === l2 ? n = E : (n = w, s = void 0);
+    let h, d, l = -1, p = 0;
+    for (; p < c.length && (n.lastIndex = p, d = n.exec(c), d !== null); ) p = n.lastIndex, n === E ? d[1] === "!--" ? n = c2 : d[1] !== void 0 ? n = l2 : d[2] !== void 0 ? (v2.test(d[2]) && (s = RegExp("</" + d[2], "g")), n = w) : d[3] !== void 0 && (n = w) : n === w ? d[0] === ">" ? (n = s ?? E, l = -1) : d[1] === void 0 ? l = -2 : (l = n.lastIndex - d[2].length, h = d[1], n = d[3] === void 0 ? w : d[3] === '"' ? h2 : d2) : n === h2 || n === d2 ? n = w : n === c2 || n === l2 ? n = E : (n = w, s = void 0);
     const f = n === w && a[o + 1].startsWith("/>") ? " " : "";
-    r += n === E ? c + I2 : d >= 0 ? (i.push(h), c.slice(0, d) + y2 + c.slice(d) + y + f) : c + y + (d === -2 ? o : f);
+    r += n === E ? c + I2 : l >= 0 ? (i.push(h), c.slice(0, l) + y2 + c.slice(l) + y + f) : c + y + (l === -2 ? o : f);
   }
   return [w2(a, r + (a[t] || "<?>") + (e === 2 ? "</svg>" : e === 3 ? "</math>" : "")), i];
 };
@@ -311,29 +311,29 @@ class H {
     let s;
     this.parts = [];
     let r = 0, n = 0;
-    const o = e.length - 1, c = this.parts, [h, l] = R2(e, t);
+    const o = e.length - 1, c = this.parts, [h, d] = R2(e, t);
     if (this.el = H.createElement(h, i), b.currentNode = this.el.content, t === 2 || t === 3) {
-      const d = this.el.content.firstChild;
-      d.replaceWith(...d.childNodes);
+      const l = this.el.content.firstChild;
+      l.replaceWith(...l.childNodes);
     }
     for (; (s = b.nextNode()) !== null && c.length < o; ) {
       if (s.nodeType === 1) {
-        if (s.hasAttributes()) for (const d of s.getAttributeNames()) if (d.endsWith(y2)) {
-          const p = l[n++], f = s.getAttribute(d).split(y), I = /([.?@])?(.*)/.exec(p);
-          c.push({ type: 1, index: r, name: I[2], strings: f, ctor: I[1] === "." ? z2 : I[1] === "?" ? B2 : I[1] === "@" ? W2 : B }), s.removeAttribute(d);
-        } else d.startsWith(y) && (c.push({ type: 6, index: r }), s.removeAttribute(d));
-        if (_2.test(s.tagName)) {
-          const d = s.textContent.split(y), p = d.length - 1;
+        if (s.hasAttributes()) for (const l of s.getAttributeNames()) if (l.endsWith(y2)) {
+          const p = d[n++], f = s.getAttribute(l).split(y), I = /([.?@])?(.*)/.exec(p);
+          c.push({ type: 1, index: r, name: I[2], strings: f, ctor: I[1] === "." ? z2 : I[1] === "?" ? B2 : I[1] === "@" ? W2 : B }), s.removeAttribute(l);
+        } else l.startsWith(y) && (c.push({ type: 6, index: r }), s.removeAttribute(l));
+        if (v2.test(s.tagName)) {
+          const l = s.textContent.split(y), p = l.length - 1;
           if (p > 0) {
             s.textContent = V ? V.emptyScript : "";
-            for (let f = 0; f < p; f++) s.append(d[f], N()), b.nextNode(), c.push({ type: 2, index: ++r });
-            s.append(d[p], N());
+            for (let f = 0; f < p; f++) s.append(l[f], N()), b.nextNode(), c.push({ type: 2, index: ++r });
+            s.append(l[p], N());
           }
         }
-      } else if (s.nodeType === 8) if (s.data === v2) c.push({ type: 2, index: r });
+      } else if (s.nodeType === 8) if (s.data === _2) c.push({ type: 2, index: r });
       else {
-        let d = -1;
-        for (; (d = s.data.indexOf(y, d + 1)) !== -1; ) c.push({ type: 7, index: r }), d += y.length - 1;
+        let l = -1;
+        for (; (l = s.data.indexOf(y, l + 1)) !== -1; ) c.push({ type: 7, index: r }), l += y.length - 1;
       }
       r++;
     }
@@ -684,11 +684,11 @@ function F(a, e = "") {
 function C2(a) {
   return new Date(a);
 }
-const h0 = { current_weather: "Current weather", hourly_weather: "Hourly forecast weather entity", daily_weather: "Daily forecast weather entity", temperature_entity: "Primary temperature sensor", calendars: "Calendars", hourly_forecast_count: "Hourly forecast count", daily_forecast_count: "Daily forecast count", show_calendar: "Show calendar", calendar_title: "Calendar title", calendar_icon: "Calendar icon" }, u0 = { today: "Today", no_events: "No events today", all_day: "All day", unknown_condition: "Unknown condition" }, p0 = { sunny: "Sunny", "clear-night": "Clear", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", hail: "Hail", lightning: "Thunderstorm", "lightning-rainy": "Thunderstorms", pouring: "Pouring rain", rainy: "Rainy", snowy: "Snowy", "snowy-rainy": "Sleet", windy: "Windy", "windy-variant": "Windy", exceptional: "Exceptional" }, z = {
+const h0 = { current_weather: "Current weather", hourly_weather: "Hourly forecast weather entity", daily_weather: "Daily forecast weather entity", temperature_entity: "Primary temperature sensor", calendars: "Calendars", hourly_forecast_count: "Hourly forecast count", daily_forecast_count: "Daily forecast count", show_hourly_forecast: "Show hourly forecast", show_daily_forecast: "Show daily forecast", show_calendar: "Show calendar", calendar_title: "Calendar title", calendar_icon: "Calendar icon" }, u0 = { today: "Today", no_events: "No events today", all_day: "All day", unknown_condition: "Unknown condition" }, p0 = { sunny: "Sunny", "clear-night": "Clear", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", hail: "Hail", lightning: "Thunderstorm", "lightning-rainy": "Thunderstorms", pouring: "Pouring rain", rainy: "Rainy", snowy: "Snowy", "snowy-rainy": "Sleet", windy: "Windy", "windy-variant": "Windy", exceptional: "Exceptional" }, z = {
   editor: h0,
   card: u0,
   conditions: p0
-}, C0 = { current_weather: "Nykyinen sää", hourly_weather: "Tuntiennusteen sääentiteetti", daily_weather: "Päiväennusteen sääentiteetti", temperature_entity: "Ensisijainen lämpötila-anturi", calendars: "Kalenterit", hourly_forecast_count: "Tuntiennusteiden määrä", daily_forecast_count: "Päiväennusteiden määrä", show_calendar: "Näytä kalenteri", calendar_title: "Kalenterin otsikko", calendar_icon: "Kalenterin kuvake" }, g0 = { today: "Tänään", no_events: "Ei tapahtumia tänään", all_day: "Koko päivä", unknown_condition: "Tuntematon säätila" }, f0 = { sunny: "Aurinkoista", "clear-night": "Selkeää", partlycloudy: "Puolipilvistä", cloudy: "Pilvistä", fog: "Sumua", hail: "Rakeita", lightning: "Ukkosta", "lightning-rainy": "Ukkossadetta", pouring: "Rankkasadetta", rainy: "Sateista", snowy: "Lumista", "snowy-rainy": "Räntäsadetta", windy: "Tuulista", "windy-variant": "Tuulista", exceptional: "Poikkeuksellinen sää" }, Q = {
+}, C0 = { current_weather: "Nykyinen sää", hourly_weather: "Tuntiennusteen sääentiteetti", daily_weather: "Päiväennusteen sääentiteetti", temperature_entity: "Ensisijainen lämpötila-anturi", calendars: "Kalenterit", hourly_forecast_count: "Tuntiennusteiden määrä", daily_forecast_count: "Päiväennusteiden määrä", show_hourly_forecast: "Näytä tuntiennuste", show_daily_forecast: "Näytä päiväennuste", show_calendar: "Näytä kalenteri", calendar_title: "Kalenterin otsikko", calendar_icon: "Kalenterin kuvake" }, g0 = { today: "Tänään", no_events: "Ei tapahtumia tänään", all_day: "Koko päivä", unknown_condition: "Tuntematon säätila" }, f0 = { sunny: "Aurinkoista", "clear-night": "Selkeää", partlycloudy: "Puolipilvistä", cloudy: "Pilvistä", fog: "Sumua", hail: "Rakeita", lightning: "Ukkosta", "lightning-rainy": "Ukkossadetta", pouring: "Rankkasadetta", rainy: "Sateista", snowy: "Lumista", "snowy-rainy": "Räntäsadetta", windy: "Tuulista", "windy-variant": "Tuulista", exceptional: "Poikkeuksellinen sää" }, Q = {
   editor: C0,
   card: g0,
   conditions: f0
@@ -698,7 +698,7 @@ var S2 = Object.defineProperty, m0 = Object.getOwnPropertyDescriptor, y0 = (a, e
     (n = a[r]) && (s = (i ? n(e, t, s) : n(s)) || s);
   return i && s && S2(e, t, s), s;
 }, A2 = (a, e, t) => y0(a, e + "", t);
-const v0 = {
+const _0 = {
   "clear-day": Q2,
   "clear-night": G2,
   cloudy: X2,
@@ -714,21 +714,22 @@ const v0 = {
   thunderstorms: o0,
   wind: c0
 };
-let _ = class extends A {
+let v = class extends A {
   constructor() {
     super(...arguments);
-    g(this, "hass");
-    g(this, "hourly", []);
-    g(this, "daily", []);
-    g(this, "events", []);
-    g(this, "now", /* @__PURE__ */ new Date());
-    g(this, "config");
-    g(this, "unsubscribers", []);
-    g(this, "eventsByCalendar", /* @__PURE__ */ new Map());
-    g(this, "clock");
-    g(this, "refreshTimer");
-    g(this, "needsInitialData", !0);
-    g(this, "refreshQueued", !1);
+    C(this, "hass");
+    C(this, "hourly", []);
+    C(this, "daily", []);
+    C(this, "events", []);
+    C(this, "now", /* @__PURE__ */ new Date());
+    C(this, "config");
+    C(this, "unsubscribers", []);
+    C(this, "eventsByCalendar", /* @__PURE__ */ new Map());
+    C(this, "clock");
+    C(this, "refreshTimer");
+    C(this, "needsInitialData", !0);
+    C(this, "refreshQueued", !1);
+    C(this, "dataVersion", 0);
   }
   static getConfigElement() {
     return document.createElement("weather-clock-card-editor");
@@ -746,7 +747,7 @@ let _ = class extends A {
   }
   setConfig(e) {
     if (!e.current_weather) throw new Error("current_weather is required");
-    this.config = e, this.needsInitialData = !0, this.queueInitialDataLoad();
+    this.config = e, this.dataVersion += 1, this.needsInitialData = !0, this.queueInitialDataLoad();
   }
   connectedCallback() {
     super.connectedCallback(), this.scheduleClock(), this.refreshTimer = window.setInterval(() => void this.refreshData(), 900 * 1e3), this.queueInitialDataLoad();
@@ -759,7 +760,9 @@ let _ = class extends A {
   }
   queueInitialDataLoad() {
     !this.needsInitialData || this.refreshQueued || !this.hass || !this.config || (this.refreshQueued = !0, queueMicrotask(async () => {
-      this.refreshQueued = !1, await this.refreshData(), this.needsInitialData = !1;
+      this.refreshQueued = !1;
+      const e = this.dataVersion;
+      await this.refreshData(), e === this.dataVersion ? this.needsInitialData = !1 : this.queueInitialDataLoad();
     }));
   }
   scheduleClock() {
@@ -804,7 +807,7 @@ let _ = class extends A {
     const t = new Date(e);
     t.setDate(t.getDate() + 1);
     const i = this.config.calendars ?? [], s = await Promise.all(i.map(async (r) => {
-      var o, c, h, l;
+      var o, c, h, d;
       try {
         const p = ((c = (o = (await this.hass.callWS({
           type: "call_service",
@@ -817,7 +820,7 @@ let _ = class extends A {
         if (p.length) return p;
       } catch {
       }
-      const n = (l = (h = this.hass) == null ? void 0 : h.states[r]) == null ? void 0 : l.attributes.message;
+      const n = (d = (h = this.hass) == null ? void 0 : h.states[r]) == null ? void 0 : d.attributes.message;
       return typeof n == "string" && n ? [{ summary: n, start: e.toISOString(), end: t.toISOString() }] : [];
     }));
     this.events = s.flat().sort((r, n) => String(r.start).localeCompare(String(n.start)));
@@ -876,7 +879,7 @@ let _ = class extends A {
   }
   icon(e, t) {
     const i = t ? [21, 22, 23, 0, 1, 2, 3, 4, 5].includes(C2(t).getHours()) : this.now.getHours() < 6 || this.now.getHours() > 20;
-    return v0[l0(e, i)] ?? $2;
+    return _0[l0(e, i)] ?? $2;
   }
   conditionLabel(e) {
     return e ? d0(e) ? (this.locale().toLowerCase().startsWith("fi") ? Q.conditions : z.conditions)[e] ?? e.replaceAll("-", " ") : `${this.t("unknown_condition", "Unknown condition")}: ${e}` : "—";
@@ -884,77 +887,80 @@ let _ = class extends A {
   renderForecast(e, t = !1) {
     var n, o, c;
     const i = ((n = this.weatherEntity()) == null ? void 0 : n.attributes.temperature_unit) ?? "°", s = C2(e.datetime), r = t ? new Intl.DateTimeFormat(this.locale(), { weekday: "short", day: "numeric", month: "numeric" }).format(s) : this.formatTime(s);
-    return C`<div class="forecast-item">
+    return g`<div class="forecast-item">
       <div class="forecast-time">${r}</div>
       <img class="forecast-icon" src=${this.icon(e.condition, e.datetime)} alt=${e.condition ?? ""} />
       <div class="forecast-temperature">${J(e.temperature, i)}</div>
-      ${t ? u : C`<div class="wind">${p2(e.wind_bearing)} ${F(e.wind_speed, ((o = this.weatherEntity()) == null ? void 0 : o.attributes.wind_speed_unit) ?? "")}</div>${e.wind_gust_speed !== void 0 ? C`<div class="gust">💨 ${F(e.wind_gust_speed, ((c = this.weatherEntity()) == null ? void 0 : c.attributes.wind_speed_unit) ?? "")}</div>` : u}`}
+      ${t ? u : g`<div class="wind">${p2(e.wind_bearing)} ${F(e.wind_speed, ((o = this.weatherEntity()) == null ? void 0 : o.attributes.wind_speed_unit) ?? "")}</div>${e.wind_gust_speed !== void 0 ? g`<div class="gust">💨 ${F(e.wind_gust_speed, ((c = this.weatherEntity()) == null ? void 0 : c.attributes.wind_speed_unit) ?? "")}</div>` : u}`}
     </div>`;
   }
   render() {
     var h;
-    if (!this.config || !this.hass) return C``;
-    const e = this.weatherEntity(), t = (e == null ? void 0 : e.attributes) ?? {}, i = e == null ? void 0 : e.state, s = t.temperature_unit ?? "°", r = this.config.temperature_entity ? (h = this.hass.states[this.config.temperature_entity]) == null ? void 0 : h.state : t.temperature, n = this.hourly.slice(0, this.config.hourly_forecast_count ?? 5), o = this.daily.slice(0, this.config.daily_forecast_count ?? 5), c = this.events.length ? this.events : (this.config.calendars ?? []).flatMap((l) => {
+    if (!this.config || !this.hass) return g``;
+    const e = this.weatherEntity(), t = (e == null ? void 0 : e.attributes) ?? {}, i = e == null ? void 0 : e.state, s = t.temperature_unit ?? "°", r = this.config.temperature_entity ? (h = this.hass.states[this.config.temperature_entity]) == null ? void 0 : h.state : t.temperature, n = this.hourly.slice(0, this.config.hourly_forecast_count ?? 5), o = this.daily.slice(0, this.config.daily_forecast_count ?? 5), c = this.events.length ? this.events : (this.config.calendars ?? []).flatMap((d) => {
       var p, f;
-      const d = (f = (p = this.hass) == null ? void 0 : p.states[l]) == null ? void 0 : f.attributes.message;
-      return typeof d == "string" && d ? [{ summary: d, start: "", end: "" }] : [];
+      const l = (f = (p = this.hass) == null ? void 0 : p.states[d]) == null ? void 0 : f.attributes.message;
+      return typeof l == "string" && l ? [{ summary: l, start: "", end: "" }] : [];
     });
-    return C`<ha-card>
+    return g`<ha-card>
       <section class="current" part="current">
         <div class="current-copy">
           <div class="date">${new Intl.DateTimeFormat(this.locale(), { weekday: "long", day: "numeric", month: "long" }).format(this.now)}</div>
           <time class="clock">${this.formatTime(this.now)}</time>
           <div class="condition">${this.conditionLabel(i)}</div>
           <div class="temperature-row"><div class="temperature">${J(r, s)}</div>
-            <div class="sensor-list">${(this.config.sensors ?? []).map((l) => {
-      var d, p;
-      return C`<div>${l.label}: ${J((p = (d = this.hass) == null ? void 0 : d.states[l.entity]) == null ? void 0 : p.state, l.unit ?? s)}</div>`;
+            <div class="sensor-list">${(this.config.sensors ?? []).map((d) => {
+      var l, p;
+      return g`<div>${d.label}: ${J((p = (l = this.hass) == null ? void 0 : l.states[d.entity]) == null ? void 0 : p.state, d.unit ?? s)}</div>`;
     })}</div>
           </div>
-          <div class="wind-details">${p2(t.wind_bearing)} ${F(t.wind_speed, t.wind_speed_unit ?? "")}${t.wind_gust_speed !== void 0 ? C`<span>💨 ${F(t.wind_gust_speed, t.wind_speed_unit ?? "")}</span>` : u}</div>
+          <div class="wind-details">${p2(t.wind_bearing)} ${F(t.wind_speed, t.wind_speed_unit ?? "")}${t.wind_gust_speed !== void 0 ? g`<span>💨 ${F(t.wind_gust_speed, t.wind_speed_unit ?? "")}</span>` : u}</div>
         </div>
         <img class="current-icon" src=${this.icon(i)} alt=${i ?? ""} />
       </section>
-      ${this.config.show_calendar !== !1 ? C`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${c.length ? c.map((l) => C`<div>${l.start ? `${this.eventTime(l)} ` : ""}${l.summary ?? ""}</div>`) : C`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : u}
-      ${n.length ? C`<section class="forecast hourly" part="hourly-forecast">${n.map((l) => this.renderForecast(l))}</section>` : u}
-      ${o.length ? C`<section class="forecast daily" part="daily-forecast">${o.map((l) => this.renderForecast(l, !0))}</section>` : u}
+      ${this.config.show_calendar !== !1 ? g`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${c.length ? c.map((d) => {
+      var l;
+      return g`<div>${(l = d.start) != null && l.includes("T") ? `${this.eventTime(d)} ` : ""}${d.summary ?? ""}</div>`;
+    }) : g`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : u}
+      ${this.config.show_hourly_forecast !== !1 && n.length ? g`<section class="forecast hourly" part="hourly-forecast">${n.map((d) => this.renderForecast(d))}</section>` : u}
+      ${this.config.show_daily_forecast !== !1 && o.length ? g`<section class="forecast daily" part="daily-forecast">${o.map((d) => this.renderForecast(d, !0))}</section>` : u}
     </ha-card>`;
   }
   eventTime(e) {
     return e.start.includes("T") ? this.formatTime(new Date(e.start)) : this.t("all_day", "All day");
   }
 };
-A2(_, "styles", m2`
-    :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 150px; --weather-clock-clock-size: 60px; }
+A2(v, "styles", m2`
+    :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 170px; --weather-clock-clock-size: 60px; }
     ha-card { height:auto; overflow:hidden; color:var(--primary-text-color); background:var(--ha-card-background, var(--card-background-color)); border-radius:var(--ha-card-border-radius, 24px); }
-    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:6px 0 16px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:6px 0 10px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.45; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
-    .calendar { display:flex; gap:18px; align-items:center; padding:10px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:3px; } .muted { color:var(--secondary-text-color); }
-    .forecast { display:flex; justify-content:space-between; gap:12px; padding:16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { flex:1 1 0; min-width:0; text-align:center; font-weight:700; } .forecast-time { min-height:2.3em; font-size:16px; text-transform:capitalize; } .forecast-icon { display:block; width:60px; height:60px; object-fit:contain; margin:6px auto; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin-top:6px; font-size:14px; }
-    @media (max-width: 500px) { .current { padding:22px; } .calendar { padding:14px 22px; } .clock { font-size:3.7rem; } .forecast { padding:18px 8px; gap:2px; } .forecast-icon { width:46px; height:46px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
+    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
+    .calendar { display:flex; gap:12px; align-items:center; padding:6px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.3; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
+    .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:10px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { flex:1 1 0; min-width:0; align-self:start; text-align:center; font-weight:700; } .forecast-time { min-height:0; margin-bottom:4px; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:76px; height:76px; object-fit:contain; margin:0 auto 4px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin-top:3px; font-size:14px; }
+    @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:8px 22px; } .clock { font-size:3.7rem; } .forecast { padding:12px 8px; gap:2px; } .forecast-icon { width:54px; height:54px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
   `);
 m([
   t2({ attribute: !1 })
-], _.prototype, "hass", 2);
+], v.prototype, "hass", 2);
 m([
   U()
-], _.prototype, "hourly", 2);
+], v.prototype, "hourly", 2);
 m([
   U()
-], _.prototype, "daily", 2);
+], v.prototype, "daily", 2);
 m([
   U()
-], _.prototype, "events", 2);
+], v.prototype, "events", 2);
 m([
   U()
-], _.prototype, "now", 2);
-_ = m([
+], v.prototype, "now", 2);
+v = m([
   b2("weather-clock-card")
-], _);
+], v);
 let O = class extends A {
   constructor() {
     super(...arguments);
-    g(this, "hass");
-    g(this, "config", { current_weather: "" });
+    C(this, "hass");
+    C(this, "config", { current_weather: "" });
   }
   setConfig(e) {
     this.config = { type: "custom:weather-clock-card", ...e }, this.requestUpdate();
@@ -976,8 +982,8 @@ let O = class extends A {
   renderSensors() {
     var i;
     const e = this.config.sensors ?? [], t = (i = this.hass) == null ? void 0 : i.locale.language.toLowerCase().startsWith("fi");
-    return C`<div class="sensors"><h3>${t ? "Lisäsensorit" : "Additional sensors"}</h3>
-      ${e.map((s, r) => C`<div class="sensor-row">
+    return g`<div class="sensors"><h3>${t ? "Lisäsensorit" : "Additional sensors"}</h3>
+      ${e.map((s, r) => g`<div class="sensor-row">
         <ha-form .hass=${this.hass} .data=${s} .schema=${[
       { name: "entity", selector: { entity: { domain: "sensor" } } },
       { name: "label", selector: { text: {} } }
@@ -985,11 +991,11 @@ let O = class extends A {
           @value-changed=${(n) => this.updateSensors(e.map((o, c) => c === r ? n.detail.value : o))}></ha-form>
         <button class="remove" @click=${() => this.updateSensors(e.filter((n, o) => o !== r))} aria-label="Remove sensor">×</button>
       </div>`)}
-      ${e.length < 3 ? C`<button class="add" @click=${() => this.updateSensors([...e, { entity: "", label: "" }])}>${t ? "Lisää sensori" : "Add sensor"}</button>` : u}
+      ${e.length < 3 ? g`<button class="add" @click=${() => this.updateSensors([...e, { entity: "", label: "" }])}>${t ? "Lisää sensori" : "Add sensor"}</button>` : u}
     </div>`;
   }
   render() {
-    return C`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.formData} .computeLabel=${(e) => this.label(e.name)} .schema=${[
+    return g`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.formData} .computeLabel=${(e) => this.label(e.name)} .schema=${[
       { name: "current_weather", required: !0, selector: { entity: { domain: "weather" } } },
       { name: "hourly_weather", selector: { entity: { domain: "weather" } } },
       { name: "daily_weather", selector: { entity: { domain: "weather" } } },
@@ -997,6 +1003,8 @@ let O = class extends A {
       { name: "calendars", selector: { entity: { domain: "calendar", multiple: !0 } } },
       { name: "hourly_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
       { name: "daily_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
+      { name: "show_hourly_forecast", selector: { boolean: {} } },
+      { name: "show_daily_forecast", selector: { boolean: {} } },
       { name: "show_calendar", selector: { boolean: {} } },
       { name: "calendar_title", selector: { text: {} } },
       { name: "calendar_icon", selector: { icon: {} } }
@@ -1018,5 +1026,5 @@ O = m([
 window.customCards = window.customCards || [];
 window.customCards.push({ type: "weather-clock-card", name: "Weather Clock Card", description: "Clock, weather forecasts and today's calendar events." });
 export {
-  _ as WeatherClockCard
+  v as WeatherClockCard
 };

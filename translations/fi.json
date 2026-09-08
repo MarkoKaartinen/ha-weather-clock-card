@@ -7,6 +7,8 @@
     "calendars": "Kalenterit",
     "hourly_forecast_count": "Tuntiennusteiden määrä",
     "daily_forecast_count": "Päiväennusteiden määrä",
+    "show_hourly_forecast": "Näytä tuntiennuste",
+    "show_daily_forecast": "Näytä päiväennuste",
     "show_calendar": "Näytä kalenteri",
     "calendar_title": "Kalenterin otsikko",
     "calendar_icon": "Kalenterin kuvake"
