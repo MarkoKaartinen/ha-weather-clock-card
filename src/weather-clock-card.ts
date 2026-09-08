@@ -41,6 +41,7 @@ type CardConfig = {
   show_hourly_forecast?: boolean;
   show_daily_forecast?: boolean;
   show_calendar?: boolean;
+  show_calendar_icon?: boolean;
   calendar_title?: string;
   calendar_icon?: string;
   labels?: Record<string, string>;
@@ -237,8 +238,13 @@ export class WeatherClockCard extends LitElement {
     const condition = weather?.state;
     const unit = (attributes.temperature_unit as string | undefined) ?? "°";
     const temperature = this.config.temperature_entity ? this.hass.states[this.config.temperature_entity]?.state : attributes.temperature;
-    const hourly = this.hourly.slice(0, this.config.hourly_forecast_count ?? 5);
-    const daily = this.daily.slice(0, this.config.daily_forecast_count ?? 5);
+    const hourly = this.hourly
+      .filter((item) => forecastDate(item.datetime).getTime() > this.now.getTime())
+      .slice(0, this.config.hourly_forecast_count ?? 5);
+    const today = new Date(this.now); today.setHours(0, 0, 0, 0);
+    const daily = this.daily
+      .filter((item) => { const date = forecastDate(item.datetime); date.setHours(0, 0, 0, 0); return date.getTime() > today.getTime(); })
+      .slice(0, this.config.daily_forecast_count ?? 5);
     const calendarEvents = this.events.length ? this.events : (this.config.calendars ?? []).flatMap((entity) => {
       const message = this.hass?.states[entity]?.attributes.message;
       return typeof message === "string" && message ? [{ summary: message, start: "", end: "" }] : [];
@@ -256,7 +262,7 @@ export class WeatherClockCard extends LitElement {
         </div>
         <img class="current-icon" src=${this.icon(condition)} alt=${condition ?? ""} />
       </section>
-      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start?.includes("T") ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
+      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar">${this.config.show_calendar_icon ? html`<ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon>` : nothing}<div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start?.includes("T") ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
       ${this.config.show_hourly_forecast !== false && hourly.length ? html`<section class="forecast hourly" part="hourly-forecast">${hourly.map((item) => this.renderForecast(item))}</section>` : nothing}
       ${this.config.show_daily_forecast !== false && daily.length ? html`<section class="forecast daily" part="daily-forecast">${daily.map((item) => this.renderForecast(item, true))}</section>` : nothing}
     </ha-card>`;
@@ -270,9 +276,9 @@ export class WeatherClockCard extends LitElement {
     :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 170px; --weather-clock-clock-size: 60px; }
     ha-card { height:auto; overflow:hidden; color:var(--primary-text-color); background:var(--ha-card-background, var(--card-background-color)); border-radius:var(--ha-card-border-radius, 24px); }
     section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
-    .calendar { display:flex; gap:12px; align-items:center; padding:6px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.3; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
-    .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:10px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { flex:1 1 0; min-width:0; align-self:start; text-align:center; font-weight:700; } .forecast-time { min-height:0; margin-bottom:4px; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:76px; height:76px; object-fit:contain; margin:0 auto 4px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin-top:3px; font-size:14px; }
-    @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:8px 22px; } .clock { font-size:3.7rem; } .forecast { padding:12px 8px; gap:2px; } .forecast-icon { width:54px; height:54px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
+    .calendar { display:flex; gap:12px; align-items:center; padding:4px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.25; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
+    .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:6px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { display:flex; flex:1 1 0; flex-direction:column; align-items:center; gap:2px; min-width:0; align-self:start; text-align:center; font-weight:700; line-height:1.15; } .forecast-time { min-height:0; margin:0; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:88px; height:88px; object-fit:contain; margin:-10px auto -8px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin:0; font-size:14px; }
+    @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:6px 22px; } .clock { font-size:3.7rem; } .forecast { padding:8px; gap:2px; } .forecast-icon { width:66px; height:66px; margin:-7px auto -6px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
   `;
 }
 
@@ -281,7 +287,7 @@ class WeatherClockCardEditor extends LitElement {
   @property({ attribute: false }) public hass?: Hass;
   @state() private config: CardConfig = { current_weather: "" };
   public setConfig(config: CardConfig): void {
-    this.config = { type: "custom:weather-clock-card", ...config };
+    this.config = { type: "custom:weather-clock-card", show_hourly_forecast: true, show_daily_forecast: true, ...config };
     this.requestUpdate();
   }
   private change(): void {
@@ -325,6 +331,7 @@ class WeatherClockCardEditor extends LitElement {
     { name: "show_hourly_forecast", selector: { boolean: {} } },
     { name: "show_daily_forecast", selector: { boolean: {} } },
     { name: "show_calendar", selector: { boolean: {} } },
+    { name: "show_calendar_icon", selector: { boolean: {} } },
     { name: "calendar_title", selector: { text: {} } },
     { name: "calendar_icon", selector: { icon: {} } },
   ]} @value-changed=${(event: CustomEvent) => { this.config = { ...this.config, ...event.detail.value }; this.change(); }}></ha-form>${this.renderSensors()}</div></ha-card>`; }
