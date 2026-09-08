@@ -65,6 +65,8 @@ export class WeatherClockCard extends LitElement {
   private eventsByCalendar = new Map<string, CalendarEvent[]>();
   private clock?: number;
   private refreshTimer?: number;
+  private needsInitialData = true;
+  private refreshQueued = false;
 
   static getConfigElement() { return document.createElement("weather-clock-card-editor"); }
   static getStubConfig() { return { current_weather: "weather.home" }; }
@@ -75,13 +77,15 @@ export class WeatherClockCard extends LitElement {
   public setConfig(config: CardConfig): void {
     if (!config.current_weather) throw new Error("current_weather is required");
     this.config = config;
-    void this.subscribeData();
+    this.needsInitialData = true;
+    this.queueInitialDataLoad();
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     this.scheduleClock();
     this.refreshTimer = window.setInterval(() => void this.refreshData(), 15 * 60 * 1000);
+    this.queueInitialDataLoad();
   }
   disconnectedCallback(): void {
     super.disconnectedCallback();
@@ -90,8 +94,17 @@ export class WeatherClockCard extends LitElement {
     this.clearSubscriptions();
   }
   protected updated(changed: Map<string, unknown>): void {
-    const previousHass = changed.get("hass") as Hass | undefined;
-    if (changed.has("hass") && previousHass?.connection !== this.hass?.connection) void this.subscribeData();
+    if (changed.has("hass")) this.queueInitialDataLoad();
+  }
+
+  private queueInitialDataLoad(): void {
+    if (!this.needsInitialData || this.refreshQueued || !this.hass || !this.config) return;
+    this.refreshQueued = true;
+    queueMicrotask(async () => {
+      this.refreshQueued = false;
+      await this.refreshData();
+      this.needsInitialData = false;
+    });
   }
 
   private scheduleClock(): void {
@@ -127,7 +140,8 @@ export class WeatherClockCard extends LitElement {
       });
       const response = actionResult.response ?? {};
       setter(response[entity]?.forecast ?? []);
-    } catch {
+    } catch (error) {
+      console.warn("Weather Clock Card could not load forecast", forecastType, entity, error);
       setter([]);
     }
   }
@@ -219,6 +233,10 @@ export class WeatherClockCard extends LitElement {
     const temperature = this.config.temperature_entity ? this.hass.states[this.config.temperature_entity]?.state : attributes.temperature;
     const hourly = this.hourly.slice(0, this.config.hourly_forecast_count ?? 5);
     const daily = this.daily.slice(0, this.config.daily_forecast_count ?? 5);
+    const calendarEvents = this.events.length ? this.events : (this.config.calendars ?? []).flatMap((entity) => {
+      const message = this.hass?.states[entity]?.attributes.message;
+      return typeof message === "string" && message ? [{ summary: message, start: "", end: "" }] : [];
+    });
     return html`<ha-card>
       <section class="current" part="current">
         <div class="current-copy">
@@ -232,7 +250,7 @@ export class WeatherClockCard extends LitElement {
         </div>
         <img class="current-icon" src=${this.icon(condition)} alt=${condition ?? ""} />
       </section>
-      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${this.events.length ? this.events.map((event) => html`<div>${this.eventTime(event)} ${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
+      ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar"><ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon><div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
       ${hourly.length ? html`<section class="forecast hourly" part="hourly-forecast">${hourly.map((item) => this.renderForecast(item))}</section>` : nothing}
       ${daily.length ? html`<section class="forecast daily" part="daily-forecast">${daily.map((item) => this.renderForecast(item, true))}</section>` : nothing}
     </ha-card>`;
