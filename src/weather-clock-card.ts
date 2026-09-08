@@ -25,6 +25,7 @@ type Hass = {
   config: { time_zone: string };
   connection: { subscribeMessage: (callback: (message: any) => void, message: Record<string, unknown>) => Promise<() => void> };
   callService: <T = unknown>(domain: string, service: string, data?: Record<string, unknown>, target?: Record<string, unknown>, returnResponse?: boolean) => Promise<T>;
+  callWS: <T = unknown>(message: Record<string, unknown>) => Promise<T>;
 };
 type SensorConfig = { entity: string; label: string; unit?: string };
 type CardConfig = {
@@ -43,8 +44,7 @@ type CardConfig = {
   labels?: Record<string, string>;
 };
 type CalendarEvent = { summary?: string; start: string; end: string };
-type ActionResult<T> = T | { response?: T };
-const actionResponse = <T>(result: ActionResult<T>): T => (result as { response?: T }).response ?? (result as T);
+type ActionResult<T> = { response?: T };
 declare global { interface Window { customCards?: Array<Record<string, string>>; } }
 
 const ICONS: Record<string, string> = {
@@ -121,10 +121,11 @@ export class WeatherClockCard extends LitElement {
   private async fetchForecast(entity: string, forecastType: "hourly" | "daily", setter: (data: Forecast[]) => void): Promise<void> {
     if (!this.hass) return;
     try {
-      const actionResult = await this.hass.callService<ActionResult<Record<string, { forecast?: Forecast[] }>>>(
-        "weather", "get_forecasts", { type: forecastType }, { entity_id: entity }, true,
-      );
-      const response = actionResponse(actionResult);
+      const actionResult = await this.hass.callWS<ActionResult<Record<string, { forecast?: Forecast[] }>>>({
+        type: "call_service", domain: "weather", service: "get_forecasts",
+        service_data: { type: forecastType }, target: { entity_id: entity }, return_response: true,
+      });
+      const response = actionResult.response ?? {};
       setter(response[entity]?.forecast ?? []);
     } catch {
       setter([]);
@@ -137,12 +138,15 @@ export class WeatherClockCard extends LitElement {
     const calendars = this.config.calendars ?? [];
     const responses = await Promise.all(calendars.map(async (entity) => {
       try {
-        const actionResult = await this.hass!.callService<ActionResult<Record<string, { events?: CalendarEvent[] }>>>(
-          "calendar", "get_events", { start_date_time: start.toISOString(), end_date_time: end.toISOString() }, { entity_id: entity }, true,
-        );
-        const response = actionResponse(actionResult);
-        return response[entity]?.events ?? [];
-      } catch { return []; }
+        const actionResult = await this.hass!.callWS<ActionResult<Record<string, { events?: CalendarEvent[] }>>>({
+          type: "call_service", domain: "calendar", service: "get_events",
+          service_data: { start_date_time: start.toISOString(), end_date_time: end.toISOString() }, target: { entity_id: entity }, return_response: true,
+        });
+        const events = actionResult.response?.[entity]?.events ?? [];
+        if (events.length) return events;
+      } catch { /* A calendar can expose only its next-event message. */ }
+      const message = this.hass?.states[entity]?.attributes.message;
+      return typeof message === "string" && message ? [{ summary: message, start: start.toISOString(), end: end.toISOString() }] : [];
     }));
     this.events = responses.flat().sort((a, b) => String(a.start).localeCompare(String(b.start)));
   }
