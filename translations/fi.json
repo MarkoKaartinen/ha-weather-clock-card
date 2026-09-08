@@ -1,0 +1,13 @@
+{
+  "editor": {
+    "current_weather": "Nykyinen sää",
+    "hourly_weather": "Tuntiennusteen sääentiteetti",
+    "daily_weather": "Päiväennusteen sääentiteetti",
+    "temperature_entity": "Ensisijainen lämpötila-anturi",
+    "calendars": "Kalenterit",
+    "hourly_forecast_count": "Tuntiennusteiden määrä",
+    "daily_forecast_count": "Päiväennusteiden määrä",
+    "show_calendar": "Näytä kalenteri"
+  },
+  "card": { "today": "Tänään", "no_events": "Ei tapahtumia tänään", "all_day": "Koko päivä", "unknown_condition": "Tuntematon säätila" }
+}

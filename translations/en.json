@@ -1,0 +1,13 @@
+{
+  "editor": {
+    "current_weather": "Current weather",
+    "hourly_weather": "Hourly forecast weather entity",
+    "daily_weather": "Daily forecast weather entity",
+    "temperature_entity": "Primary temperature sensor",
+    "calendars": "Calendars",
+    "hourly_forecast_count": "Hourly forecast count",
+    "daily_forecast_count": "Daily forecast count",
+    "show_calendar": "Show calendar"
+  },
+  "card": { "today": "Today", "no_events": "No events today", "all_day": "All day", "unknown_condition": "Unknown condition" }
+}
