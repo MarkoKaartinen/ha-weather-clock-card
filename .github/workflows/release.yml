@@ -20,6 +20,6 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - run: gh release create "$GITHUB_REF_NAME" dist/weather-clock-card.js --generate-notes
+      - run: gh release create "$GITHUB_REF_NAME" dist/ha-weather-clock-card.js --generate-notes
         env:
           GH_TOKEN: ${{ github.token }}

@@ -5,7 +5,7 @@ export default defineConfig({
     lib: {
       entry: "src/weather-clock-card.ts",
       formats: ["es"],
-      fileName: () => "weather-clock-card.js",
+      fileName: () => "ha-weather-clock-card.js",
     },
     outDir: "dist",
     emptyOutDir: true,

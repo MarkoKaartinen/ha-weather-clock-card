@@ -4,7 +4,7 @@ A single Home Assistant Lovelace card for a live clock, current weather, separat
 
 ## Installation
 
-Add this repository to HACS as a custom **Dashboard** repository and install it. Then add the generated `weather-clock-card.js` resource to Lovelace if HACS has not done so automatically.
+Add this repository to HACS as a custom **Dashboard** repository and install it. Then add the generated `ha-weather-clock-card.js` resource to Lovelace if HACS has not done so automatically.
 
 The card supports Home Assistant Core 2024.3 and newer.
 
