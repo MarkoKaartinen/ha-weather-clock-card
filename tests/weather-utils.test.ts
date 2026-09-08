@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatTemperature, iconName, isKnownCondition, windArrow } from "../src/weather-utils";
+import { formatTemperature, formatWind, iconName, isKnownCondition, windArrow } from "../src/weather-utils";
 
 describe("weather condition mapping", () => {
   it("selects weather icons and night variants", () => {
@@ -16,7 +16,8 @@ describe("weather condition mapping", () => {
 describe("weather formatting", () => {
   it("rounds sensor temperatures and uses HA wind directions", () => {
     expect(formatTemperature("13.6")).toBe("14°");
-    expect(windArrow(90)).toBe("→");
-    expect(windArrow("SW")).toBe("↙");
+    expect(formatWind(5.19, "m/s")).toBe("5 m/s");
+    expect(windArrow(90)).toBe("←");
+    expect(windArrow("eteläkaakko")).toBe("↖");
   });
 });

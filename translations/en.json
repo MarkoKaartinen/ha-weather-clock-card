@@ -7,7 +7,10 @@
     "calendars": "Calendars",
     "hourly_forecast_count": "Hourly forecast count",
     "daily_forecast_count": "Daily forecast count",
-    "show_calendar": "Show calendar"
+    "show_calendar": "Show calendar",
+    "calendar_title": "Calendar title",
+    "calendar_icon": "Calendar icon"
   },
-  "card": { "today": "Today", "no_events": "No events today", "all_day": "All day", "unknown_condition": "Unknown condition" }
+  "card": { "today": "Today", "no_events": "No events today", "all_day": "All day", "unknown_condition": "Unknown condition" },
+  "conditions": { "sunny": "Sunny", "clear-night": "Clear", "partlycloudy": "Partly cloudy", "cloudy": "Cloudy", "fog": "Fog", "hail": "Hail", "lightning": "Thunderstorm", "lightning-rainy": "Thunderstorms", "pouring": "Pouring rain", "rainy": "Rainy", "snowy": "Snowy", "snowy-rainy": "Sleet", "windy": "Windy", "windy-variant": "Windy", "exceptional": "Exceptional" }
 }

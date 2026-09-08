@@ -39,17 +39,26 @@ export function isKnownCondition(condition: string | undefined): boolean {
 
 export function windArrow(bearing: number | string | undefined): string {
   if (typeof bearing === "number") {
-    return ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"][Math.round(bearing / 45) % 8];
+    return ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"][Math.round((bearing + 180) / 45) % 8];
   }
   const cardinal: Record<string, string> = {
-    N: "↑", NE: "↗", E: "→", SE: "↘", S: "↓", SW: "↙", W: "←", NW: "↖",
+    N: "↓", NE: "↙", E: "←", SE: "↖", S: "↑", SW: "↗", W: "→", NW: "↘",
+    NORTH: "↓", NORTHEAST: "↙", EAST: "←", SOUTHEAST: "↖", SOUTH: "↑", SOUTHWEST: "↗", WEST: "→", NORTHWEST: "↘",
+    POHJOINEN: "↓", KOILLINEN: "↙", ITÄ: "←", ITA: "←", KAAKKO: "↖", ETELÄ: "↑", ETELA: "↑", LOUNAS: "↗", LÄNSI: "→", LANSI: "→", LUODE: "↘",
+    POHJOISKOILLINEN: "↙", ITÄKOILLINEN: "↙", ITAKOILLINEN: "↙", ITÄKAAKKO: "↖", ITAKAAKKO: "↖", ETELÄKAAKKO: "↖", ETELAKAAKKO: "↖", ETELÄLOUNAS: "↗", ETELALOUNAS: "↗", LÄNSILOUNAS: "↗", LANSILOUNAS: "↗", LÄNSILUODE: "↘", LANSILUODE: "↘", POHJOISLUODE: "↘",
   };
-  return cardinal[bearing?.toUpperCase() ?? ""] ?? "↑";
+  return cardinal[bearing?.toUpperCase() ?? ""] ?? "";
 }
 
 export function formatTemperature(value: unknown, unit = "°"): string {
   const number = Number(value);
-  return Number.isFinite(number) ? `${Math.round(number)}${unit}` : "—";
+  const displayUnit = unit === "°C" ? "°" : unit;
+  return Number.isFinite(number) ? `${Math.round(number)}${displayUnit}` : "—";
+}
+
+export function formatWind(value: unknown, unit = ""): string {
+  const number = Number(value);
+  return Number.isFinite(number) ? `${Math.round(number)}${unit ? ` ${unit}` : ""}` : "—";
 }
 
 export function forecastDate(value: string): Date {

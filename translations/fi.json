@@ -7,7 +7,10 @@
     "calendars": "Kalenterit",
     "hourly_forecast_count": "Tuntiennusteiden määrä",
     "daily_forecast_count": "Päiväennusteiden määrä",
-    "show_calendar": "Näytä kalenteri"
+    "show_calendar": "Näytä kalenteri",
+    "calendar_title": "Kalenterin otsikko",
+    "calendar_icon": "Kalenterin kuvake"
   },
-  "card": { "today": "Tänään", "no_events": "Ei tapahtumia tänään", "all_day": "Koko päivä", "unknown_condition": "Tuntematon säätila" }
+  "card": { "today": "Tänään", "no_events": "Ei tapahtumia tänään", "all_day": "Koko päivä", "unknown_condition": "Tuntematon säätila" },
+  "conditions": { "sunny": "Aurinkoista", "clear-night": "Selkeää", "partlycloudy": "Puolipilvistä", "cloudy": "Pilvistä", "fog": "Sumua", "hail": "Rakeita", "lightning": "Ukkosta", "lightning-rainy": "Ukkossadetta", "pouring": "Rankkasadetta", "rainy": "Sateista", "snowy": "Lumista", "snowy-rainy": "Räntäsadetta", "windy": "Tuulista", "windy-variant": "Tuulista", "exceptional": "Poikkeuksellinen sää" }
 }
