@@ -191,12 +191,17 @@ export class WeatherClockCard extends LitElement {
 class WeatherClockCardEditor extends LitElement {
   @property({ attribute: false }) public hass?: Hass;
   private config: CardConfig = { current_weather: "" };
-  public setConfig(config: CardConfig): void { this.config = { ...config }; }
-  private change(key: keyof CardConfig, value: unknown): void {
-    this.config = { ...this.config, [key]: value };
+  public setConfig(config: CardConfig): void {
+    this.config = { type: "custom:weather-clock-card", ...config };
+  }
+  private change(): void {
     this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this.config }, bubbles: true, composed: true }));
   }
-  render() { return html`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.config} .schema=${[
+  private label(key: keyof typeof en.editor): string {
+    const dictionary = this.hass?.locale.language.toLowerCase().startsWith("fi") ? fi.editor : en.editor;
+    return dictionary[key] ?? en.editor[key];
+  }
+  render() { return html`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.config} .computeLabel=${(schema: { name: string }) => this.label(schema.name as keyof typeof en.editor)} .schema=${[
     { name: "current_weather", required: true, selector: { entity: { domain: "weather" } } },
     { name: "hourly_weather", selector: { entity: { domain: "weather" } } },
     { name: "daily_weather", selector: { entity: { domain: "weather" } } },
@@ -205,7 +210,7 @@ class WeatherClockCardEditor extends LitElement {
     { name: "hourly_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
     { name: "daily_forecast_count", selector: { number: { min: 1, max: 12, mode: "box" } } },
     { name: "show_calendar", selector: { boolean: {} } },
-  ]} @value-changed=${(event: CustomEvent) => { this.config = event.detail.value; this.change("current_weather", this.config.current_weather); }}></ha-form><p>Configure additional named sensors in YAML with <code>sensors:</code>.</p></div></ha-card>`; }
+  ]} @value-changed=${(event: CustomEvent) => { this.config = { ...this.config, ...event.detail.value }; this.change(); }}></ha-form><p>${this.hass?.locale.language.toLowerCase().startsWith("fi") ? "Määritä nimetyt lisäsensorit YAMLissa sensors:-avaimella." : "Configure additional named sensors in YAML with the sensors: key."}</p></div></ha-card>`; }
   static styles = css`.editor { padding: 16px; } p { color: var(--secondary-text-color); font-size:.9rem; }`;
 }
 
