@@ -136,11 +136,32 @@ export class WeatherClockCard extends LitElement {
     // and a freshly opened dashboard do not start out empty.
     this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (data) => (this.hourly = data));
     this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (data) => (this.daily = data));
-    await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]);
+    // The service response supplies the first frame, while the subscription
+    // keeps it live afterwards. Either route can win without leaving the card
+    // blank on integrations with a delayed subscription response.
+    await Promise.all([
+      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (data) => (this.hourly = data)),
+      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (data) => (this.daily = data)),
+      this.subscribeLiveUpdates(),
+      this.fetchCalendars(),
+    ]);
   }
   private loadCachedForecast(entity: string, setter: (data: Forecast[]) => void): void {
     const forecast = this.hass?.states[entity]?.attributes.forecast;
     if (Array.isArray(forecast)) setter(forecast as Forecast[]);
+  }
+  private async fetchForecast(entity: string, forecastType: "hourly" | "daily", setter: (data: Forecast[]) => void): Promise<void> {
+    if (!this.hass) return;
+    try {
+      const actionResult = await this.hass.callWS<ActionResult<Record<string, { forecast?: Forecast[] }>>>({
+        type: "call_service", domain: "weather", service: "get_forecasts",
+        service_data: { type: forecastType }, target: { entity_id: entity }, return_response: true,
+      });
+      const forecast = actionResult.response?.[entity]?.forecast;
+      if (forecast) setter(forecast);
+    } catch (error) {
+      console.warn("Weather Clock Card could not load initial forecast", forecastType, entity, error);
+    }
   }
   private async fetchCalendars(): Promise<void> {
     if (!this.hass || !this.config) return;
@@ -172,7 +193,9 @@ export class WeatherClockCard extends LitElement {
           { resubscribe: false },
         );
         this.unsubscribers.push(unsubscribe);
-      } catch { setter([]); }
+      } catch (error) {
+        console.warn("Weather Clock Card could not subscribe to forecast", forecastType, entity, error);
+      }
     };
     await Promise.all([subscribe(this.config.hourly_weather ?? this.config.current_weather, "hourly", (data) => (this.hourly = data)), subscribe(this.config.daily_weather ?? this.config.current_weather, "daily", (data) => (this.daily = data))]);
   }

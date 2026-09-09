@@ -774,12 +774,34 @@ let v = class extends L {
     this.unsubscribers.splice(0).forEach((e) => e()), this.eventsByCalendar.clear();
   }
   async subscribeData() {
-    !this.hass || !this.config || (this.clearSubscriptions(), this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (e) => this.hourly = e), this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (e) => this.daily = e), await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]));
+    !this.hass || !this.config || (this.clearSubscriptions(), this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (e) => this.hourly = e), this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (e) => this.daily = e), await Promise.all([
+      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (e) => this.hourly = e),
+      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (e) => this.daily = e),
+      this.subscribeLiveUpdates(),
+      this.fetchCalendars()
+    ]));
   }
   loadCachedForecast(e, t) {
     var s, n;
     const i = (n = (s = this.hass) == null ? void 0 : s.states[e]) == null ? void 0 : n.attributes.forecast;
     Array.isArray(i) && t(i);
+  }
+  async fetchForecast(e, t, i) {
+    var s, n;
+    if (this.hass)
+      try {
+        const o = (n = (s = (await this.hass.callWS({
+          type: "call_service",
+          domain: "weather",
+          service: "get_forecasts",
+          service_data: { type: t },
+          target: { entity_id: e },
+          return_response: !0
+        })).response) == null ? void 0 : s[e]) == null ? void 0 : n.forecast;
+        o && i(o);
+      } catch (r) {
+        console.warn("Weather Clock Card could not load initial forecast", t, e, r);
+      }
   }
   async fetchCalendars() {
     if (!this.hass || !this.config) return;
@@ -820,8 +842,8 @@ let v = class extends L {
           { resubscribe: !1 }
         );
         this.unsubscribers.push(n);
-      } catch {
-        s([]);
+      } catch (n) {
+        console.warn("Weather Clock Card could not subscribe to forecast", i, t, n);
       }
     };
     await Promise.all([e(this.config.hourly_weather ?? this.config.current_weather, "hourly", (t) => this.hourly = t), e(this.config.daily_weather ?? this.config.current_weather, "daily", (t) => this.daily = t)]);
