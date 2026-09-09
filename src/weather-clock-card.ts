@@ -89,7 +89,10 @@ export class WeatherClockCard extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     this.scheduleClock();
-    this.refreshTimer = window.setInterval(() => void this.refreshData(), 15 * 60 * 1000);
+    // Forecasts are kept fresh by the WebSocket subscription. Only calendar
+    // events need a timed refresh (for example when the date rolls over).
+    this.needsInitialData = true;
+    this.refreshTimer = window.setInterval(() => void this.fetchCalendars(), 15 * 60 * 1000);
     this.queueInitialDataLoad();
   }
   disconnectedCallback(): void {
@@ -108,7 +111,7 @@ export class WeatherClockCard extends LitElement {
     queueMicrotask(async () => {
       this.refreshQueued = false;
       const version = this.dataVersion;
-      await this.refreshData();
+      await this.subscribeData();
       if (version === this.dataVersion) this.needsInitialData = false;
       else this.queueInitialDataLoad();
     });
@@ -128,29 +131,7 @@ export class WeatherClockCard extends LitElement {
   private async subscribeData(): Promise<void> {
     if (!this.hass || !this.config) return;
     this.clearSubscriptions();
-    await this.refreshData();
-  }
-  private async refreshData(): Promise<void> {
-    if (!this.hass || !this.config) return;
-    await Promise.all([
-      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (data) => (this.hourly = data)),
-      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (data) => (this.daily = data)),
-      this.fetchCalendars(),
-    ]);
-  }
-  private async fetchForecast(entity: string, forecastType: "hourly" | "daily", setter: (data: Forecast[]) => void): Promise<void> {
-    if (!this.hass) return;
-    try {
-      const actionResult = await this.hass.callWS<ActionResult<Record<string, { forecast?: Forecast[] }>>>({
-        type: "call_service", domain: "weather", service: "get_forecasts",
-        service_data: { type: forecastType }, target: { entity_id: entity }, return_response: true,
-      });
-      const response = actionResult.response ?? {};
-      setter(response[entity]?.forecast ?? []);
-    } catch (error) {
-      console.warn("Weather Clock Card could not load forecast", forecastType, entity, error);
-      setter([]);
-    }
+    await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]);
   }
   private async fetchCalendars(): Promise<void> {
     if (!this.hass || !this.config) return;

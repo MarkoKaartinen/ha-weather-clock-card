@@ -750,7 +750,7 @@ let v = class extends L {
     this.config = e, this.dataVersion += 1, this.needsInitialData = !0, this.queueInitialDataLoad();
   }
   connectedCallback() {
-    super.connectedCallback(), this.scheduleClock(), this.refreshTimer = window.setInterval(() => void this.refreshData(), 900 * 1e3), this.queueInitialDataLoad();
+    super.connectedCallback(), this.scheduleClock(), this.needsInitialData = !0, this.refreshTimer = window.setInterval(() => void this.fetchCalendars(), 900 * 1e3), this.queueInitialDataLoad();
   }
   disconnectedCallback() {
     super.disconnectedCallback(), this.clock && window.clearTimeout(this.clock), this.refreshTimer && window.clearInterval(this.refreshTimer), this.clearSubscriptions();
@@ -762,7 +762,7 @@ let v = class extends L {
     !this.needsInitialData || this.refreshQueued || !this.hass || !this.config || (this.refreshQueued = !0, queueMicrotask(async () => {
       this.refreshQueued = !1;
       const e = this.dataVersion;
-      await this.refreshData(), e === this.dataVersion ? this.needsInitialData = !1 : this.queueInitialDataLoad();
+      await this.subscribeData(), e === this.dataVersion ? this.needsInitialData = !1 : this.queueInitialDataLoad();
     }));
   }
   scheduleClock() {
@@ -774,31 +774,7 @@ let v = class extends L {
     this.unsubscribers.splice(0).forEach((e) => e()), this.eventsByCalendar.clear();
   }
   async subscribeData() {
-    !this.hass || !this.config || (this.clearSubscriptions(), await this.refreshData());
-  }
-  async refreshData() {
-    !this.hass || !this.config || await Promise.all([
-      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (e) => this.hourly = e),
-      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (e) => this.daily = e),
-      this.fetchCalendars()
-    ]);
-  }
-  async fetchForecast(e, t, i) {
-    var s;
-    if (this.hass)
-      try {
-        const n = (await this.hass.callWS({
-          type: "call_service",
-          domain: "weather",
-          service: "get_forecasts",
-          service_data: { type: t },
-          target: { entity_id: e },
-          return_response: !0
-        })).response ?? {};
-        i(((s = n[e]) == null ? void 0 : s.forecast) ?? []);
-      } catch (r) {
-        console.warn("Weather Clock Card could not load forecast", t, e, r), i([]);
-      }
+    !this.hass || !this.config || (this.clearSubscriptions(), await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]));
   }
   async fetchCalendars() {
     if (!this.hass || !this.config) return;
