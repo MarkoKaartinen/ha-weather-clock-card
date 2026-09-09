@@ -23,7 +23,7 @@ type Hass = {
   states: Record<string, HassEntity>;
   locale: { language: string; time_format?: "12" | "24" };
   config: { time_zone: string };
-  connection: { subscribeMessage: (callback: (message: any) => void, message: Record<string, unknown>) => Promise<() => void> };
+  connection: { subscribeMessage: (callback: (message: any) => void, message: Record<string, unknown>, options?: Record<string, unknown>) => Promise<() => void> };
   callService: <T = unknown>(domain: string, service: string, data?: Record<string, unknown>, target?: Record<string, unknown>, returnResponse?: boolean) => Promise<T>;
   callWS: <T = unknown>(message: Record<string, unknown>) => Promise<T>;
 };
@@ -131,7 +131,16 @@ export class WeatherClockCard extends LitElement {
   private async subscribeData(): Promise<void> {
     if (!this.hass || !this.config) return;
     this.clearSubscriptions();
+    // Some integrations still expose their latest forecast in the entity
+    // attributes. Render that cached value synchronously so editor previews
+    // and a freshly opened dashboard do not start out empty.
+    this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (data) => (this.hourly = data));
+    this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (data) => (this.daily = data));
     await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]);
+  }
+  private loadCachedForecast(entity: string, setter: (data: Forecast[]) => void): void {
+    const forecast = this.hass?.states[entity]?.attributes.forecast;
+    if (Array.isArray(forecast)) setter(forecast as Forecast[]);
   }
   private async fetchCalendars(): Promise<void> {
     if (!this.hass || !this.config) return;
@@ -160,6 +169,7 @@ export class WeatherClockCard extends LitElement {
         const unsubscribe = await this.hass!.connection.subscribeMessage(
           (message) => setter(message.forecast ?? message.event?.forecast ?? []),
           { type: "weather/subscribe_forecast", entity_id: entity, forecast_type: forecastType },
+          { resubscribe: false },
         );
         this.unsubscribers.push(unsubscribe);
       } catch { setter([]); }
