@@ -71,6 +71,8 @@ export class WeatherClockCard extends LitElement {
   private needsInitialData = true;
   private refreshQueued = false;
   private dataVersion = 0;
+  private forecastSubscriptions = new Set<"hourly" | "daily">();
+  private forecastSubscriptionRequests = new Set<"hourly" | "daily">();
 
   static getConfigElement() { return document.createElement("weather-clock-card-editor"); }
   static getStubConfig() { return { current_weather: "weather.home" }; }
@@ -102,7 +104,14 @@ export class WeatherClockCard extends LitElement {
     this.clearSubscriptions();
   }
   protected updated(changed: Map<string, unknown>): void {
-    if (changed.has("hass")) this.queueInitialDataLoad();
+    if (!changed.has("hass")) return;
+    // Match the built-in card's lifecycle: retry only when a subscription has
+    // not been established yet. The HA WebSocket client then keeps successful
+    // subscriptions alive across reconnects.
+    if (this.forecastSubscriptions.size < 2 && this.forecastSubscriptionRequests.size === 0) {
+      this.needsInitialData = true;
+    }
+    this.queueInitialDataLoad();
   }
 
   private queueInitialDataLoad(): void {
@@ -127,6 +136,8 @@ export class WeatherClockCard extends LitElement {
   private clearSubscriptions(): void {
     this.unsubscribers.splice(0).forEach((unsubscribe) => unsubscribe());
     this.eventsByCalendar.clear();
+    this.forecastSubscriptions.clear();
+    this.forecastSubscriptionRequests.clear();
   }
   private async subscribeData(): Promise<void> {
     if (!this.hass || !this.config) return;
@@ -136,32 +147,11 @@ export class WeatherClockCard extends LitElement {
     // and a freshly opened dashboard do not start out empty.
     this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (data) => (this.hourly = data));
     this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (data) => (this.daily = data));
-    // The service response supplies the first frame, while the subscription
-    // keeps it live afterwards. Either route can win without leaving the card
-    // blank on integrations with a delayed subscription response.
-    await Promise.all([
-      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (data) => (this.hourly = data)),
-      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (data) => (this.daily = data)),
-      this.subscribeLiveUpdates(),
-      this.fetchCalendars(),
-    ]);
+    await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]);
   }
   private loadCachedForecast(entity: string, setter: (data: Forecast[]) => void): void {
     const forecast = this.hass?.states[entity]?.attributes.forecast;
     if (Array.isArray(forecast)) setter(forecast as Forecast[]);
-  }
-  private async fetchForecast(entity: string, forecastType: "hourly" | "daily", setter: (data: Forecast[]) => void): Promise<void> {
-    if (!this.hass) return;
-    try {
-      const actionResult = await this.hass.callWS<ActionResult<Record<string, { forecast?: Forecast[] }>>>({
-        type: "call_service", domain: "weather", service: "get_forecasts",
-        service_data: { type: forecastType }, target: { entity_id: entity }, return_response: true,
-      });
-      const forecast = actionResult.response?.[entity]?.forecast;
-      if (forecast) setter(forecast);
-    } catch (error) {
-      console.warn("Weather Clock Card could not load initial forecast", forecastType, entity, error);
-    }
   }
   private async fetchCalendars(): Promise<void> {
     if (!this.hass || !this.config) return;
@@ -186,15 +176,18 @@ export class WeatherClockCard extends LitElement {
   private async subscribeLiveUpdates(): Promise<void> {
     if (!this.hass || !this.config) return;
     const subscribe = async (entity: string, forecastType: "hourly" | "daily", setter: (data: Forecast[]) => void) => {
+      this.forecastSubscriptionRequests.add(forecastType);
       try {
         const unsubscribe = await this.hass!.connection.subscribeMessage(
           (message) => setter(message.forecast ?? message.event?.forecast ?? []),
           { type: "weather/subscribe_forecast", entity_id: entity, forecast_type: forecastType },
-          { resubscribe: false },
         );
         this.unsubscribers.push(unsubscribe);
+        this.forecastSubscriptions.add(forecastType);
       } catch (error) {
         console.warn("Weather Clock Card could not subscribe to forecast", forecastType, entity, error);
+      } finally {
+        this.forecastSubscriptionRequests.delete(forecastType);
       }
     };
     await Promise.all([subscribe(this.config.hourly_weather ?? this.config.current_weather, "hourly", (data) => (this.hourly = data)), subscribe(this.config.daily_weather ?? this.config.current_weather, "daily", (data) => (this.daily = data))]);
@@ -265,16 +258,18 @@ export class WeatherClockCard extends LitElement {
     });
     return html`<ha-card>
       <section class="current" part="current">
-        <div class="current-copy">
-          <div class="date">${new Intl.DateTimeFormat(this.locale(), { weekday: "long", day: "numeric", month: "long" }).format(this.now)}</div>
+        <div class="date">${new Intl.DateTimeFormat(this.locale(), { weekday: "long", day: "numeric", month: "long" }).format(this.now)}</div>
+        <div class="current-main">
+          <div class="current-copy">
           <time class="clock">${this.formatTime(this.now)}</time>
           <div class="condition">${this.conditionLabel(condition)}</div>
           <div class="temperature-row"><div class="temperature">${formatTemperature(temperature, unit)}</div>
             <div class="sensor-list">${(this.config.sensors ?? []).map((sensor) => html`<div>${sensor.label}: ${formatTemperature(this.hass?.states[sensor.entity]?.state, sensor.unit ?? unit)}</div>`)}</div>
           </div>
           <div class="wind-details">${windArrow(attributes.wind_bearing as number | string)} ${formatWind(attributes.wind_speed, attributes.wind_speed_unit as string ?? "")}${attributes.wind_gust_speed !== undefined ? html`<span>💨 ${formatWind(attributes.wind_gust_speed, attributes.wind_speed_unit as string ?? "")}</span>` : nothing}</div>
+          </div>
+          <img class="current-icon" src=${this.icon(condition)} alt=${condition ?? ""} />
         </div>
-        <img class="current-icon" src=${this.icon(condition)} alt=${condition ?? ""} />
       </section>
       ${this.config.show_calendar !== false ? html`<section class="calendar" part="calendar">${this.config.show_calendar_icon ? html`<ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon>` : nothing}<div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${calendarEvents.length ? calendarEvents.map((event) => html`<div>${event.start?.includes("T") ? `${this.eventTime(event)} ` : ""}${event.summary ?? ""}</div>`) : html`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : nothing}
       ${this.config.show_hourly_forecast !== false && hourly.length ? html`<section class="forecast hourly" part="hourly-forecast">${hourly.map((item) => this.renderForecast(item))}</section>` : nothing}
@@ -289,7 +284,7 @@ export class WeatherClockCard extends LitElement {
   static styles = css`
     :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 170px; --weather-clock-clock-size: 60px; }
     ha-card { height:auto; overflow:hidden; color:var(--primary-text-color); background:var(--ha-card-background, var(--card-background-color)); border-radius:var(--ha-card-border-radius, 24px); }
-    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
+    section { box-sizing:border-box; } .current { padding:12px 24px; } .current-main { display:flex; align-items:center; justify-content:space-between; gap:16px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; margin-bottom:4px; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
     .calendar { display:flex; gap:12px; align-items:center; padding:12px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.25; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
     .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:12px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { display:flex; flex:1 1 0; flex-direction:column; align-items:center; gap:2px; min-width:0; align-self:start; text-align:center; font-weight:700; line-height:1.15; } .forecast-time { min-height:0; margin:0; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:88px; height:88px; object-fit:contain; margin:-10px auto -8px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin:0; font-size:14px; }
     @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:6px 22px; } .clock { font-size:3.7rem; } .forecast { padding:8px; gap:2px; } .forecast-icon { width:66px; height:66px; margin:-7px auto -6px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }

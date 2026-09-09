@@ -1,12 +1,12 @@
 var L2 = Object.defineProperty;
 var x2 = (a, e, t) => e in a ? L2(a, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : a[e] = t;
-var g = (a, e, t) => x2(a, typeof e != "symbol" ? e + "" : e, t);
+var C = (a, e, t) => x2(a, typeof e != "symbol" ? e + "" : e, t);
 /**
  * @license
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const R = globalThis, X = R.ShadowRoot && (R.ShadyCSS === void 0 || R.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Y = Symbol(), s2 = /* @__PURE__ */ new WeakMap();
+const Z = globalThis, X = Z.ShadowRoot && (Z.ShadyCSS === void 0 || Z.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype, Y = Symbol(), s2 = /* @__PURE__ */ new WeakMap();
 let f2 = class {
   constructor(e, t, i) {
     if (this._$cssResult$ = !0, i !== Y) throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");
@@ -35,7 +35,7 @@ const E2 = (a) => new f2(typeof a == "string" ? a : a + "", void 0, Y), m2 = (a,
 }, M2 = (a, e) => {
   if (X) a.adoptedStyleSheets = e.map((t) => t instanceof CSSStyleSheet ? t : t.styleSheet);
   else for (const t of e) {
-    const i = document.createElement("style"), s = R.litNonce;
+    const i = document.createElement("style"), s = Z.litNonce;
     s !== void 0 && i.setAttribute("nonce", s), i.textContent = t.cssText, a.appendChild(i);
   }
 }, a2 = X ? (a) => a : (a) => a instanceof CSSStyleSheet ? ((e) => {
@@ -289,12 +289,12 @@ A.elementStyles = [], A.shadowRootOptions = { mode: "open" }, A[T("elementProper
  */
 const N = globalThis, o2 = (a) => a, z = N.trustedTypes, c2 = z ? z.createPolicy("lit-html", { createHTML: (a) => a }) : void 0, y2 = "$lit$", y = `lit$${Math.random().toFixed(9).slice(2)}$`, _2 = "?" + y, I2 = `<${_2}>`, S = document, P = () => S.createComment(""), H = (a) => a === null || typeof a != "object" && typeof a != "function", t2 = Array.isArray, F2 = (a) => t2(a) || typeof (a == null ? void 0 : a[Symbol.iterator]) == "function", j = `[ 	
 \f\r]`, M = /<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g, l2 = /-->/g, d2 = />/g, b = RegExp(`>|${j}(?:([^\\s"'>=/]+)(${j}*=${j}*(?:[^ 	
-\f\r"'\`<>=]|("|')|))|$)`, "g"), h2 = /'/g, u2 = /"/g, v2 = /^(?:script|style|textarea|title)$/i, Z2 = (a) => (e, ...t) => ({ _$litType$: a, strings: e, values: t }), C = Z2(1), x = Symbol.for("lit-noChange"), h = Symbol.for("lit-nothing"), p2 = /* @__PURE__ */ new WeakMap(), $ = S.createTreeWalker(S, 129);
+\f\r"'\`<>=]|("|')|))|$)`, "g"), h2 = /'/g, u2 = /"/g, v2 = /^(?:script|style|textarea|title)$/i, R2 = (a) => (e, ...t) => ({ _$litType$: a, strings: e, values: t }), g = R2(1), x = Symbol.for("lit-noChange"), h = Symbol.for("lit-nothing"), p2 = /* @__PURE__ */ new WeakMap(), $ = S.createTreeWalker(S, 129);
 function w2(a, e) {
   if (!t2(a) || !a.hasOwnProperty("raw")) throw Error("invalid template strings array");
   return c2 !== void 0 ? c2.createHTML(e) : e;
 }
-const R2 = (a, e) => {
+const Z2 = (a, e) => {
   const t = a.length - 1, i = [];
   let s, n = e === 2 ? "<svg>" : e === 3 ? "<math>" : "", r = M;
   for (let o = 0; o < t; o++) {
@@ -311,7 +311,7 @@ class O {
     let s;
     this.parts = [];
     let n = 0, r = 0;
-    const o = e.length - 1, c = this.parts, [d, p] = R2(e, t);
+    const o = e.length - 1, c = this.parts, [d, p] = Z2(e, t);
     if (this.el = O.createElement(d, i), $.currentNode = this.el.content, t === 2 || t === 3) {
       const l = this.el.content.firstChild;
       l.replaceWith(...l.childNodes);
@@ -681,7 +681,7 @@ function F(a, e = "") {
   const t = Number(a);
   return Number.isFinite(t) ? `${Math.round(t)}${e ? ` ${e}` : ""}` : "—";
 }
-function Z(a) {
+function R(a) {
   return new Date(a);
 }
 const h0 = { current_weather: "Current weather", hourly_weather: "Hourly forecast weather entity", daily_weather: "Daily forecast weather entity", temperature_entity: "Primary temperature sensor", calendars: "Calendars", hourly_forecast_count: "Hourly forecast count", daily_forecast_count: "Daily forecast count", show_hourly_forecast: "Show hourly forecast", show_daily_forecast: "Show daily forecast", show_calendar: "Show calendar", show_calendar_icon: "Show calendar icon", calendar_title: "Calendar title", calendar_icon: "Calendar icon" }, u0 = { today: "Today", no_events: "No events today", all_day: "All day", unknown_condition: "Unknown condition" }, p0 = { sunny: "Sunny", "clear-night": "Clear", partlycloudy: "Partly cloudy", cloudy: "Cloudy", fog: "Fog", hail: "Hail", lightning: "Thunderstorm", "lightning-rainy": "Thunderstorms", pouring: "Pouring rain", rainy: "Rainy", snowy: "Snowy", "snowy-rainy": "Sleet", windy: "Windy", "windy-variant": "Windy", exceptional: "Exceptional" }, B = {
@@ -717,19 +717,21 @@ const _0 = {
 let v = class extends L {
   constructor() {
     super(...arguments);
-    g(this, "hass");
-    g(this, "hourly", []);
-    g(this, "daily", []);
-    g(this, "events", []);
-    g(this, "now", /* @__PURE__ */ new Date());
-    g(this, "config");
-    g(this, "unsubscribers", []);
-    g(this, "eventsByCalendar", /* @__PURE__ */ new Map());
-    g(this, "clock");
-    g(this, "refreshTimer");
-    g(this, "needsInitialData", !0);
-    g(this, "refreshQueued", !1);
-    g(this, "dataVersion", 0);
+    C(this, "hass");
+    C(this, "hourly", []);
+    C(this, "daily", []);
+    C(this, "events", []);
+    C(this, "now", /* @__PURE__ */ new Date());
+    C(this, "config");
+    C(this, "unsubscribers", []);
+    C(this, "eventsByCalendar", /* @__PURE__ */ new Map());
+    C(this, "clock");
+    C(this, "refreshTimer");
+    C(this, "needsInitialData", !0);
+    C(this, "refreshQueued", !1);
+    C(this, "dataVersion", 0);
+    C(this, "forecastSubscriptions", /* @__PURE__ */ new Set());
+    C(this, "forecastSubscriptionRequests", /* @__PURE__ */ new Set());
   }
   static getConfigElement() {
     return document.createElement("weather-clock-card-editor");
@@ -756,7 +758,7 @@ let v = class extends L {
     super.disconnectedCallback(), this.clock && window.clearTimeout(this.clock), this.refreshTimer && window.clearInterval(this.refreshTimer), this.clearSubscriptions();
   }
   updated(e) {
-    e.has("hass") && this.queueInitialDataLoad();
+    e.has("hass") && (this.forecastSubscriptions.size < 2 && this.forecastSubscriptionRequests.size === 0 && (this.needsInitialData = !0), this.queueInitialDataLoad());
   }
   queueInitialDataLoad() {
     !this.needsInitialData || this.refreshQueued || !this.hass || !this.config || (this.refreshQueued = !0, queueMicrotask(async () => {
@@ -771,37 +773,15 @@ let v = class extends L {
     this.clock = window.setTimeout(() => this.scheduleClock(), e);
   }
   clearSubscriptions() {
-    this.unsubscribers.splice(0).forEach((e) => e()), this.eventsByCalendar.clear();
+    this.unsubscribers.splice(0).forEach((e) => e()), this.eventsByCalendar.clear(), this.forecastSubscriptions.clear(), this.forecastSubscriptionRequests.clear();
   }
   async subscribeData() {
-    !this.hass || !this.config || (this.clearSubscriptions(), this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (e) => this.hourly = e), this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (e) => this.daily = e), await Promise.all([
-      this.fetchForecast(this.config.hourly_weather ?? this.config.current_weather, "hourly", (e) => this.hourly = e),
-      this.fetchForecast(this.config.daily_weather ?? this.config.current_weather, "daily", (e) => this.daily = e),
-      this.subscribeLiveUpdates(),
-      this.fetchCalendars()
-    ]));
+    !this.hass || !this.config || (this.clearSubscriptions(), this.loadCachedForecast(this.config.hourly_weather ?? this.config.current_weather, (e) => this.hourly = e), this.loadCachedForecast(this.config.daily_weather ?? this.config.current_weather, (e) => this.daily = e), await Promise.all([this.subscribeLiveUpdates(), this.fetchCalendars()]));
   }
   loadCachedForecast(e, t) {
     var s, n;
     const i = (n = (s = this.hass) == null ? void 0 : s.states[e]) == null ? void 0 : n.attributes.forecast;
     Array.isArray(i) && t(i);
-  }
-  async fetchForecast(e, t, i) {
-    var s, n;
-    if (this.hass)
-      try {
-        const o = (n = (s = (await this.hass.callWS({
-          type: "call_service",
-          domain: "weather",
-          service: "get_forecasts",
-          service_data: { type: t },
-          target: { entity_id: e },
-          return_response: !0
-        })).response) == null ? void 0 : s[e]) == null ? void 0 : n.forecast;
-        o && i(o);
-      } catch (r) {
-        console.warn("Weather Clock Card could not load initial forecast", t, e, r);
-      }
   }
   async fetchCalendars() {
     if (!this.hass || !this.config) return;
@@ -832,18 +812,20 @@ let v = class extends L {
   async subscribeLiveUpdates() {
     if (!this.hass || !this.config) return;
     const e = async (t, i, s) => {
+      this.forecastSubscriptionRequests.add(i);
       try {
         const n = await this.hass.connection.subscribeMessage(
           (r) => {
             var o;
             return s(r.forecast ?? ((o = r.event) == null ? void 0 : o.forecast) ?? []);
           },
-          { type: "weather/subscribe_forecast", entity_id: t, forecast_type: i },
-          { resubscribe: !1 }
+          { type: "weather/subscribe_forecast", entity_id: t, forecast_type: i }
         );
-        this.unsubscribers.push(n);
+        this.unsubscribers.push(n), this.forecastSubscriptions.add(i);
       } catch (n) {
         console.warn("Weather Clock Card could not subscribe to forecast", i, t, n);
+      } finally {
+        this.forecastSubscriptionRequests.delete(i);
       }
     };
     await Promise.all([e(this.config.hourly_weather ?? this.config.current_weather, "hourly", (t) => this.hourly = t), e(this.config.daily_weather ?? this.config.current_weather, "daily", (t) => this.daily = t)]);
@@ -882,7 +864,7 @@ let v = class extends L {
     return new Intl.DateTimeFormat(this.locale(), { hour: "2-digit", minute: "2-digit", hour12: ((t = this.hass) == null ? void 0 : t.locale.time_format) === "12" }).format(e);
   }
   icon(e, t) {
-    const i = t ? [21, 22, 23, 0, 1, 2, 3, 4, 5].includes(Z(t).getHours()) : this.now.getHours() < 6 || this.now.getHours() > 20;
+    const i = t ? [21, 22, 23, 0, 1, 2, 3, 4, 5].includes(R(t).getHours()) : this.now.getHours() < 6 || this.now.getHours() > 20;
     return _0[l0(e, i)] ?? $2;
   }
   conditionLabel(e) {
@@ -890,49 +872,51 @@ let v = class extends L {
   }
   renderForecast(e, t = !1) {
     var r, o, c;
-    const i = ((r = this.weatherEntity()) == null ? void 0 : r.attributes.temperature_unit) ?? "°", s = Z(e.datetime), n = t ? new Intl.DateTimeFormat(this.locale(), { weekday: "short", day: "numeric", month: "numeric" }).format(s) : this.formatTime(s);
-    return C`<div class="forecast-item">
+    const i = ((r = this.weatherEntity()) == null ? void 0 : r.attributes.temperature_unit) ?? "°", s = R(e.datetime), n = t ? new Intl.DateTimeFormat(this.locale(), { weekday: "short", day: "numeric", month: "numeric" }).format(s) : this.formatTime(s);
+    return g`<div class="forecast-item">
       <div class="forecast-time">${n}</div>
       <img class="forecast-icon" src=${this.icon(e.condition, e.datetime)} alt=${e.condition ?? ""} />
       <div class="forecast-temperature">${Q(e.temperature, i)}</div>
-      ${t ? h : C`<div class="wind">${C2(e.wind_bearing)} ${F(e.wind_speed, ((o = this.weatherEntity()) == null ? void 0 : o.attributes.wind_speed_unit) ?? "")}</div>${e.wind_gust_speed !== void 0 ? C`<div class="gust">💨 ${F(e.wind_gust_speed, ((c = this.weatherEntity()) == null ? void 0 : c.attributes.wind_speed_unit) ?? "")}</div>` : h}`}
+      ${t ? h : g`<div class="wind">${C2(e.wind_bearing)} ${F(e.wind_speed, ((o = this.weatherEntity()) == null ? void 0 : o.attributes.wind_speed_unit) ?? "")}</div>${e.wind_gust_speed !== void 0 ? g`<div class="gust">💨 ${F(e.wind_gust_speed, ((c = this.weatherEntity()) == null ? void 0 : c.attributes.wind_speed_unit) ?? "")}</div>` : h}`}
     </div>`;
   }
   render() {
     var p;
-    if (!this.config || !this.hass) return C``;
-    const e = this.weatherEntity(), t = (e == null ? void 0 : e.attributes) ?? {}, i = e == null ? void 0 : e.state, s = t.temperature_unit ?? "°", n = this.config.temperature_entity ? (p = this.hass.states[this.config.temperature_entity]) == null ? void 0 : p.state : t.temperature, r = this.hourly.filter((l) => Z(l.datetime).getTime() > this.now.getTime()).slice(0, this.config.hourly_forecast_count ?? 5), o = new Date(this.now);
+    if (!this.config || !this.hass) return g``;
+    const e = this.weatherEntity(), t = (e == null ? void 0 : e.attributes) ?? {}, i = e == null ? void 0 : e.state, s = t.temperature_unit ?? "°", n = this.config.temperature_entity ? (p = this.hass.states[this.config.temperature_entity]) == null ? void 0 : p.state : t.temperature, r = this.hourly.filter((l) => R(l.datetime).getTime() > this.now.getTime()).slice(0, this.config.hourly_forecast_count ?? 5), o = new Date(this.now);
     o.setHours(0, 0, 0, 0);
     const c = this.daily.filter((l) => {
-      const u = Z(l.datetime);
+      const u = R(l.datetime);
       return u.setHours(0, 0, 0, 0), u.getTime() > o.getTime();
     }).slice(0, this.config.daily_forecast_count ?? 5), d = this.events.length ? this.events : (this.config.calendars ?? []).flatMap((l) => {
       var f, w;
       const u = (w = (f = this.hass) == null ? void 0 : f.states[l]) == null ? void 0 : w.attributes.message;
       return typeof u == "string" && u ? [{ summary: u, start: "", end: "" }] : [];
     });
-    return C`<ha-card>
+    return g`<ha-card>
       <section class="current" part="current">
-        <div class="current-copy">
-          <div class="date">${new Intl.DateTimeFormat(this.locale(), { weekday: "long", day: "numeric", month: "long" }).format(this.now)}</div>
+        <div class="date">${new Intl.DateTimeFormat(this.locale(), { weekday: "long", day: "numeric", month: "long" }).format(this.now)}</div>
+        <div class="current-main">
+          <div class="current-copy">
           <time class="clock">${this.formatTime(this.now)}</time>
           <div class="condition">${this.conditionLabel(i)}</div>
           <div class="temperature-row"><div class="temperature">${Q(n, s)}</div>
             <div class="sensor-list">${(this.config.sensors ?? []).map((l) => {
       var u, f;
-      return C`<div>${l.label}: ${Q((f = (u = this.hass) == null ? void 0 : u.states[l.entity]) == null ? void 0 : f.state, l.unit ?? s)}</div>`;
+      return g`<div>${l.label}: ${Q((f = (u = this.hass) == null ? void 0 : u.states[l.entity]) == null ? void 0 : f.state, l.unit ?? s)}</div>`;
     })}</div>
           </div>
-          <div class="wind-details">${C2(t.wind_bearing)} ${F(t.wind_speed, t.wind_speed_unit ?? "")}${t.wind_gust_speed !== void 0 ? C`<span>💨 ${F(t.wind_gust_speed, t.wind_speed_unit ?? "")}</span>` : h}</div>
+          <div class="wind-details">${C2(t.wind_bearing)} ${F(t.wind_speed, t.wind_speed_unit ?? "")}${t.wind_gust_speed !== void 0 ? g`<span>💨 ${F(t.wind_gust_speed, t.wind_speed_unit ?? "")}</span>` : h}</div>
+          </div>
+          <img class="current-icon" src=${this.icon(i)} alt=${i ?? ""} />
         </div>
-        <img class="current-icon" src=${this.icon(i)} alt=${i ?? ""} />
       </section>
-      ${this.config.show_calendar !== !1 ? C`<section class="calendar" part="calendar">${this.config.show_calendar_icon ? C`<ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon>` : h}<div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${d.length ? d.map((l) => {
+      ${this.config.show_calendar !== !1 ? g`<section class="calendar" part="calendar">${this.config.show_calendar_icon ? g`<ha-icon icon=${this.config.calendar_icon ?? "mdi:calendar-today"}></ha-icon>` : h}<div><strong>${this.config.calendar_title ?? this.t("today", "Today")}</strong>${d.length ? d.map((l) => {
       var u;
-      return C`<div>${(u = l.start) != null && u.includes("T") ? `${this.eventTime(l)} ` : ""}${l.summary ?? ""}</div>`;
-    }) : C`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : h}
-      ${this.config.show_hourly_forecast !== !1 && r.length ? C`<section class="forecast hourly" part="hourly-forecast">${r.map((l) => this.renderForecast(l))}</section>` : h}
-      ${this.config.show_daily_forecast !== !1 && c.length ? C`<section class="forecast daily" part="daily-forecast">${c.map((l) => this.renderForecast(l, !0))}</section>` : h}
+      return g`<div>${(u = l.start) != null && u.includes("T") ? `${this.eventTime(l)} ` : ""}${l.summary ?? ""}</div>`;
+    }) : g`<div class="muted">${this.t("no_events", "No events today")}</div>`}</div></section>` : h}
+      ${this.config.show_hourly_forecast !== !1 && r.length ? g`<section class="forecast hourly" part="hourly-forecast">${r.map((l) => this.renderForecast(l))}</section>` : h}
+      ${this.config.show_daily_forecast !== !1 && c.length ? g`<section class="forecast daily" part="daily-forecast">${c.map((l) => this.renderForecast(l, !0))}</section>` : h}
     </ha-card>`;
   }
   eventTime(e) {
@@ -942,7 +926,7 @@ let v = class extends L {
 A2(v, "styles", m2`
     :host { display:block; align-self:start; --weather-clock-accent: var(--primary-color); --weather-clock-icon-size: 170px; --weather-clock-clock-size: 60px; }
     ha-card { height:auto; overflow:hidden; color:var(--primary-text-color); background:var(--ha-card-background, var(--card-background-color)); border-radius:var(--ha-card-border-radius, 24px); }
-    section { box-sizing:border-box; } .current { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 24px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
+    section { box-sizing:border-box; } .current { padding:12px 24px; } .current-main { display:flex; align-items:center; justify-content:space-between; gap:16px; } .date,.condition { font-weight:700; text-transform:uppercase; letter-spacing:.02em; } .date { font-size:1rem; margin-bottom:4px; } .clock { display:block; font-size:var(--weather-clock-clock-size); font-weight:800; line-height:1; margin:4px 0 12px; letter-spacing:-.06em; } .condition { font-size:1rem; } .temperature-row { display:flex; align-items:center; gap:16px; margin:4px 0 8px; } .temperature { font-size:40px; font-weight:800; line-height:1; letter-spacing:-.06em; } .sensor-list { font-size:14px; font-weight:700; line-height:1.35; text-transform:uppercase; } .wind-details { font-size:14px; font-weight:700; } .wind-details span { margin-left:8px; } .current-icon { width:var(--weather-clock-icon-size); min-width:var(--weather-clock-icon-size); height:var(--weather-clock-icon-size); object-fit:contain; }
     .calendar { display:flex; gap:12px; align-items:center; padding:12px 24px; border-top:1px solid var(--divider-color); border-bottom:1px solid var(--divider-color); line-height:1.25; } .calendar ha-icon { color:var(--weather-clock-accent); } .calendar strong { display:block; margin-bottom:0; } .muted { color:var(--secondary-text-color); }
     .forecast { display:flex; align-items:start; justify-content:space-between; gap:8px; padding:12px 16px; } .daily { border-top:1px solid var(--divider-color); } .forecast-item { display:flex; flex:1 1 0; flex-direction:column; align-items:center; gap:2px; min-width:0; align-self:start; text-align:center; font-weight:700; line-height:1.15; } .forecast-time { min-height:0; margin:0; font-size:16px; line-height:1.2; text-transform:capitalize; } .forecast-icon { display:block; width:88px; height:88px; object-fit:contain; margin:-10px auto -8px; } .forecast-temperature { font-size:18px; } .wind,.gust { white-space:nowrap; margin:0; font-size:14px; }
     @media (max-width: 500px) { .current { padding:16px 22px; } .calendar { padding:6px 22px; } .clock { font-size:3.7rem; } .forecast { padding:8px; gap:2px; } .forecast-icon { width:66px; height:66px; margin:-7px auto -6px; } .forecast-time { font-size:.85rem; } .forecast-temperature { font-size:1.25rem; } .wind,.gust { font-size:.75rem; } }
@@ -968,8 +952,8 @@ v = m([
 let D = class extends L {
   constructor() {
     super(...arguments);
-    g(this, "hass");
-    g(this, "config", { current_weather: "" });
+    C(this, "hass");
+    C(this, "config", { current_weather: "" });
   }
   setConfig(e) {
     this.config = { type: "custom:weather-clock-card", show_hourly_forecast: !0, show_daily_forecast: !0, ...e }, this.requestUpdate();
@@ -991,8 +975,8 @@ let D = class extends L {
   renderSensors() {
     var i;
     const e = this.config.sensors ?? [], t = (i = this.hass) == null ? void 0 : i.locale.language.toLowerCase().startsWith("fi");
-    return C`<div class="sensors"><h3>${t ? "Lisäsensorit" : "Additional sensors"}</h3>
-      ${e.map((s, n) => C`<div class="sensor-row">
+    return g`<div class="sensors"><h3>${t ? "Lisäsensorit" : "Additional sensors"}</h3>
+      ${e.map((s, n) => g`<div class="sensor-row">
         <ha-form .hass=${this.hass} .data=${s} .schema=${[
       { name: "entity", selector: { entity: { domain: "sensor" } } },
       { name: "label", selector: { text: {} } }
@@ -1000,11 +984,11 @@ let D = class extends L {
           @value-changed=${(r) => this.updateSensors(e.map((o, c) => c === n ? r.detail.value : o))}></ha-form>
         <button class="remove" @click=${() => this.updateSensors(e.filter((r, o) => o !== n))} aria-label="Remove sensor">×</button>
       </div>`)}
-      ${e.length < 3 ? C`<button class="add" @click=${() => this.updateSensors([...e, { entity: "", label: "" }])}>${t ? "Lisää sensori" : "Add sensor"}</button>` : h}
+      ${e.length < 3 ? g`<button class="add" @click=${() => this.updateSensors([...e, { entity: "", label: "" }])}>${t ? "Lisää sensori" : "Add sensor"}</button>` : h}
     </div>`;
   }
   render() {
-    return C`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.formData} .computeLabel=${(e) => this.label(e.name)} .schema=${[
+    return g`<ha-card><div class="editor"><ha-form .hass=${this.hass} .data=${this.formData} .computeLabel=${(e) => this.label(e.name)} .schema=${[
       { name: "current_weather", required: !0, selector: { entity: { domain: "weather" } } },
       { name: "hourly_weather", selector: { entity: { domain: "weather" } } },
       { name: "daily_weather", selector: { entity: { domain: "weather" } } },
